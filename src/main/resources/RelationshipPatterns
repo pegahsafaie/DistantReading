@@ -1,0 +1,6 @@
+{
+    "familyRelations":["father", "mother", "parent", "child", "boy", "girl", "son", "daughter", "grandmother", "grandfather","grandchildren", "uncle", "niece", "cousin", "aunt", "sibling", "brother", "sister", "marriage", "married", "marry"],
+    "friendRelations" : ["friend", "enemy", "Commitment", "happy", "Peaceful", "like", "loyal", "help"],
+    "romanticRelationShip" :["kiss", "Hug", "Heart", "Boyfriend", "girlfriend", "Fiance", "Honor", "love", "Emotion", "embrace", "Engage", "Excite"],
+    "enemyRelations" :["enemy", "hate", "betrayal", "lie", "injure", "hurt", "fight", "kill", "steal", "force"]
+}

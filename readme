@@ -1,0 +1,4 @@
+java main inputFile outputFolder mode{story, interview, test}
+
+please manage your input file in paragraphs. a long story can break the system.
+test mode uses the sample file in the project
