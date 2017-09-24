@@ -1,4 +1,27 @@
-java main inputFile outputFolder mode{story, interview, test}
+java main {inputFile} {outputFolder} mode{story, interview, test}
 
-please manage your input file in paragraphs. a long story can break the system.
-test mode uses the sample file in the project
+note: please manage your input file in paragraphs(4 new line between each paragraph). a long story can break the system. Also you cant use the temporal Analysis.
+
+if you use test mode :
+    uses the sample file in the project. the coreferences in the file are resolved. so the analysis ould be faster done
+    and also you dont need to start Grephene service throught docker on your system. the negative side is that you cant use your custom input
+    to be analyzed.
+
+if you use story mode:
+    you need to start Pycobalt service on your local computer. you can fine Graphene project
+    in lambda3 project under GitHub.
+    this case can take too much time, because of the coreference resolving.
+
+if you use the Interview mode:
+    you dont need to run the pyCobalt service, because for the interview mode,
+    we just consider a sequences of question and answer. and our main goal is to
+    extract the personality of the interviewers and the person/persons who answer.
+
+the output of the system comes in 4 file:
+    relation.json
+    profile.json
+    event.json
+    chapters.json
+you can see our result samples in the out folder of the project.
+
+

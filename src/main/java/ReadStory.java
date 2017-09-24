@@ -31,7 +31,7 @@ public class ReadStory {
             } else if (mode.toLowerCase().trim().equals("story")) {
                 content = doCoreference(inputFileAddress);
             } else {
-                content = readFile("SampleStoryResolved.txt");
+                content = readFile(inputFileAddress);
             }
 
 
@@ -54,7 +54,7 @@ public class ReadStory {
             }
             System.out.print("you can reach your created json files under this address:" + outFolderAddress);
         } catch (Exception ex) {
-            System.out.print("ERROR IN main function" + ex.getMessage());
+            System.out.print("ERROR IN main function " + ex.getMessage());
         }
     }
 

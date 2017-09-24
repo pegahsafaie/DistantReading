@@ -1,0 +1,874 @@
+[
+  {
+    "name": "Uther",
+    "adj": [
+      "good man",
+      "king",
+      "sad",
+      "ill"
+    ],
+    "verb": [
+      "died",
+      "told",
+      "said",
+      "married",
+      "loved",
+      "wanted",
+      "took",
+      "gave",
+      "called",
+      "said",
+      "get"
+    ],
+    "location": [
+      "south of britain"
+    ],
+    "personality": "",
+    "sentiment": "positive",
+    "relation": [
+      "Arthur family",
+      "Irgaine family",
+      "Irgaine romantic"
+    ]
+  },
+  {
+    "name": "Irgaine",
+    "adj": [
+      "beautiful"
+    ],
+    "verb": [
+      "love"
+    ],
+    "location": [],
+    "personality": "",
+    "sentiment": "neutral",
+    "relation": [
+      "Arthur family",
+      "Uther family"
+    ]
+  },
+  {
+    "name": "Merlin",
+    "adj": [
+      "clever man",
+      "'famous man'",
+      "old man"
+    ],
+    "verb": [
+      "see",
+      "asked",
+      "spoke",
+      "get out",
+      "come out",
+      "help",
+      "teach",
+      "change",
+      "cried",
+      "made",
+      "told",
+      "told",
+      "came",
+      "listen",
+      "listened",
+      "went",
+      "told",
+      "'brought'",
+      "said",
+      "came",
+      "helped",
+      "used",
+      "told",
+      "knew",
+      "taught",
+      "visited",
+      "took",
+      "gave",
+      "answered"
+    ],
+    "location": [
+      "London",
+      "Avalon"
+    ],
+    "personality": "",
+    "sentiment": "positive",
+    "relation": [
+      "Arthur friend"
+    ]
+  },
+  {
+    "name": "Arthur",
+    "adj": [
+      "strong",
+      "not afraid",
+      "king",
+      "kind young man",
+      "'bravest knight'",
+      "'greatest king'",
+      "good man",
+      "good king",
+      "good husband",
+      "brave man",
+      "hungry",
+      "thirsty",
+      "tired",
+      "'bad knight'",
+      "angry",
+      "tired",
+      "not happy",
+      "weak",
+      "'dead'",
+      "sorry",
+      "sad",
+      "'dead'"
+    ],
+    "verb": [
+      "sent",
+      "'sleeping'",
+      "'leave'",
+      "stop",
+      "get",
+      "heard",
+      "asked",
+      "knew",
+      "cried",
+      "fight",
+      "got",
+      "thought",
+      "walked down",
+      "opened",
+      "called",
+      "followed",
+      "built",
+      "wanted",
+      "asleep",
+      "won",
+      "hurt",
+      "jumped up",
+      "felt",
+      "know",
+      "woke up",
+      "looked",
+      "saw",
+      "left",
+      "went",
+      "saw",
+      "understand",
+      "pulled",
+      "read",
+      "went",
+      "lived",
+      "took",
+      "met",
+      "took",
+      "said",
+      "put",
+      "pulled",
+      "ran back",
+      "showed",
+      "saw",
+      "'try'",
+      "'listen'",
+      "began",
+      "took",
+      "went",
+      "told",
+      "gave",
+      "went",
+      "went",
+      "fought",
+      "came back",
+      "love",
+      "visited",
+      "made",
+      "stopped",
+      "looked",
+      "said",
+      "went",
+      "answered",
+      "went",
+      "met",
+      "fell",
+      "stood up",
+      "threw",
+      "ran",
+      "pulled out",
+      "pulled",
+      "fought",
+      "put",
+      "took",
+      "'died'",
+      "climbed down",
+      "left",
+      "helped",
+      "see",
+      "take"
+    ],
+    "location": [
+      "Avalon",
+      "Camelot",
+      "France",
+      "England"
+    ],
+    "personality": "",
+    "sentiment": "very positive",
+    "relation": [
+      "Sir Ector family",
+      "Uther family",
+      "Irgaine family",
+      "kay family",
+      "Merlin friend",
+      "King lea friend",
+      "Ginevere family",
+      "Guinevere romantic",
+      "Gawain friend"
+    ]
+  },
+  {
+    "name": "Ector",
+    "adj": [
+      "good knight",
+      "Sir"
+    ],
+    "verb": [
+      "knew",
+      "saw",
+      "took",
+      "said",
+      "put",
+      "said",
+      "asked",
+      "went"
+    ],
+    "location": [],
+    "sentiment": "positive",
+    "personality": "",
+    "relation": [
+      "Arthur famiy",
+      "Sir Kai family"
+    ]
+  },
+  {
+    "name": "Sir Kai",
+    "adj": [],
+    "verb": [],
+    "location": [],
+    "sentiment": "",
+    "personality": "",
+    "relation": [
+      "Ector family",
+      "Arthur family"
+    ]
+  },
+  {
+    "name": "Archbishop",
+    "adj": [
+      "important"
+    ],
+    "verb": [
+      "spoke",
+      "invited",
+      "thought",
+      "called"
+    ],
+    "personality": "",
+    "sentiment": "neutral",
+    "location": [],
+    "relation": []
+  },
+  {
+    "name": "Guinevere",
+    "adj": [
+      "beautiful woman",
+      "angry",
+      "afraid"
+    ],
+    "verb": [
+      "left",
+      "cried",
+      "know",
+      "answered",
+      "told",
+      "went",
+      "called",
+      "said",
+      "looked",
+      "spoke",
+      "'came'",
+      "'loves'"
+    ],
+    "location": [
+      "England"
+    ],
+    "sentiment": "positive",
+    "personality": "",
+    "relation": [
+      "Arthur family"
+    ]
+  },
+  {
+    "name": "Queen Annoure",
+    "adj": [
+      "kind",
+      "'richest person'"
+    ],
+    "verb": [
+      "sent",
+      "says",
+      "took",
+      "gave",
+      "knew",
+      "'wanted'"
+    ],
+    "location": [],
+    "sentiment": "very negative",
+    "personality": "",
+    "relation": []
+  },
+  {
+    "name": "Pellinore",
+    "adj": [
+      "Sir",
+      "knight",
+      "tired"
+    ],
+    "verb": [
+      "lived",
+      "shouted",
+      "took",
+      "hit",
+      "cried",
+      "fought",
+      "hurt",
+      "sat",
+      "waited",
+      "know",
+      "see",
+      "looked up",
+      "saw",
+      "'know'"
+    ],
+    "location": [
+      "Camelot"
+    ],
+    "sentiment": "neutral",
+    "personality": "",
+    "relation": [
+      "Arthur enemy",
+      "Arthur friend"
+    ]
+  },
+  {
+    "name": "Galahad",
+    "adj": [
+      "'best knight'",
+      "'good knight'",
+      "new king",
+      "'happy'",
+      "not  afraid",
+      "dead",
+      "happy"
+    ],
+    "verb": [
+      "came",
+      "sit",
+      "said",
+      "built",
+      "put","cried"
+    ],
+    "location": [
+      "Camelot"
+    ],
+    "sentiment": "very positive",
+    "personality": "",
+    "relation": []
+  },
+  {
+    "name": "Morgan-le-Fay",
+    "adj": [
+      "queen",
+      "bad  woman",
+      "'hungry'",
+      "'thirsty'",
+      "'kind friend'"
+    ],
+    "verb": [
+      "do",
+      "used",
+      "hated",
+      "wanted",
+      "heard",
+      "wants",
+      "got",
+      "left",
+      "watched",
+      "took",
+      "put",
+      "'visited'",
+      "threw",
+      "sent",
+      "said",
+      "arrived",
+      "cried",
+      "'gave'",
+      "went",
+      "thought",
+      "asked",
+      "stood",
+      "watched",
+      "take",
+      "want",
+      "saw",
+      "'came'",
+      "'stay'",
+      "'loves'"
+    ],
+    "location": [
+      "Gorres",
+      "Camelot"
+    ],
+    "personality": "",
+    "sentiment": "very negative",
+    "relation": [
+      "Arthur Enemy"
+    ]
+  },
+  {
+    "name": "Damas",
+    "adj": [
+      "Sir",
+      "very evil knight",
+      "'not brave man'"
+    ],
+    "verb": [
+      "caught",
+      "put",
+      "wants",
+      "asked",
+      "answered",
+      "gave"
+    ],
+    "location": [],
+    "sentiment": "very negative",
+    "personality": "",
+    "relation": []
+  },
+  {
+    "name": "Accolon",
+    "adj": [
+      "Sir",
+      "'sorry'"
+    ],
+    "verb": [
+      "said"
+    ],
+    "location": [],
+    "sentiment": "neutral",
+    "personality": "",
+    "relation": []
+  },
+  {
+    "name": "Vivien",
+    "adj": [
+      "Lady"
+    ],
+    "verb": [
+      "lived",
+      "knew",
+      "saw",
+      "learned",
+      "went",
+      "studied",
+      "thought",
+      "climbed",
+      "ran out",
+      "shouted"
+    ],
+    "location": [
+      "Camelot"
+    ],
+    "sentiment": "very negative",
+    "personality": "",
+    "relation": [
+      "Merlin Enemy"
+    ]
+  },
+  {
+    "name": "Meligrance",
+    "adj": [
+      "Sir",
+      "afraid",
+      "'sorry'",
+      "'good knight'",
+      "dead"
+    ],
+    "verb": [
+      "moved",
+      "saw",
+      "loved",
+      "wanted",
+      "said",
+      "fell",
+      "hit",
+      "answered",
+      "went",
+      "knew",
+      "thought",
+      "showed",
+      "told"
+    ],
+    "location": [],
+    "relation": [
+      "Guinevere romantic"
+    ],
+    "sentiment": "very negative",
+    "personality": ""
+  },
+  {
+    "name": "Lancelot",
+    "adj": [
+      "Sir",
+      "strongest knight",
+      "brave",
+      "strong",
+      "very angry",
+      "'strongest'"
+    ],
+    "verb": [
+      "heard",
+      "put",
+      "took",
+      "said",
+      "arrived",
+      "came",
+      "thought",
+      "'kill'",
+      "climb  up",
+      "went",
+      "left",
+      "fight",
+      "win",
+      "jumped away",
+      "cut",
+      "smiled",
+      "fell",
+      "said",
+      "want",
+      "cried","married"
+    ],
+    "location": [
+      "France"
+    ],
+    "personality": "",
+    "sentiment": "positive",
+    "relation": [
+      "Meligrance enemy",
+      "Galahad family"
+    ]
+  },
+  {
+    "name": "King of Lyonesse",
+    "adj": [
+      "angry"
+    ],
+    "verb": [
+      "went",
+      "wanted",
+      "made",
+      "find",
+      "come back",
+      "'knows'",
+      "speak",
+      "eat",
+      "'die'",
+      "began",
+      "married",
+      "remembered"
+    ],
+    "personality": "",
+    "sentiment": "neutral",
+    "location": [
+      "Lyonesse"
+    ],
+    "relation": [
+      "Tristam family"
+    ]
+  },
+  {
+    "name": "Tristram",
+    "adj": [
+      "happy",
+      "strong",
+      "brave man",
+      "happy",
+      "sadly",
+      "angry",
+      "stronger",
+      "Sir",
+      "'kind'",
+      "'young'",
+      "'brave'"
+    ],
+    "verb": [
+      "went",
+      "loved",
+      "said",
+      "got",
+      "fell  down",
+      "arrived",
+      "told",
+      "used",
+      "killed",
+      "began",
+      "moved",
+      "hit",
+      "loved",
+      "saw",
+      "gave",
+      "asked",
+      "jumped",
+      "came",
+      "thought",
+      "looked",
+      "taught",
+      "liked",
+      "stood",
+      "pulled",
+      "got off",
+      "'help'",
+      "cried",
+      "played",
+      "fight",
+      "took",
+      "fought",
+      "threw",
+      "answered",
+      "stayed",
+      "stop",
+      "fell",
+      "died"
+    ],
+    "personality": "",
+    "sentiment": "very positive",
+    "location": [
+      "Cornwall",
+      "Irland",
+      "Camelot"
+    ],
+    "relation": [
+      "Isolet romantic",
+      "Mark family"
+    ]
+  },
+  {
+    "name": "Mark",
+    "adj": [
+      "King",
+      "'good man'",
+      "afraid"
+    ],
+    "verb": [
+      "love",
+      "gave",
+      "began",
+      "followed",
+      "watched",
+      "shouted",
+      "wounded",
+      "thought",
+      "made",
+      "sent",
+      "said",
+      "'wants'",
+      "came"
+    ],
+    "location": [],
+    "sentiment": "negative",
+    "personality": "",
+    "relation": [
+      "Tristram family",
+      "Isolet family",
+      "King of Lyonesse family"
+    ]
+  },
+  {
+    "name": "Marhaus",
+    "adj": [
+      "Sir",
+      "'best'",
+      "'strongest knight'",
+      "strong",
+      "older"
+    ],
+    "verb": [
+      "came",
+      "hit",
+      "started",
+      "wounded"
+    ],
+    "personality": "",
+    "sentiment": "neutral",
+    "location": [
+      "Irland"
+    ],
+    "relation": []
+  },
+  {
+    "name": "Isolt",
+    "adj": [
+      "'good student'",
+      "happy",
+      "'beautiful'",
+      "'kind'",
+      "afraid",
+      "'Queen'"
+    ],
+    "verb": [
+      "cleaned",
+      "stayed",
+      "enjoyed",
+      "knew",
+      "married",
+      "ran  away",
+      "ran",
+      "cried",
+      "sat down",
+      "stood",
+      "looked",
+      "asked",
+      "listened",
+      "heard",
+      "eat",
+      "drink",
+      "speak",
+      "died",
+      "loved",
+      "thought",
+      "saw",
+      "watched"
+    ],
+    "sentiment": "positive",
+    "location": [
+      "London"
+    ],
+    "personality": "",
+    "relation": [
+      "Mark family",
+      "Tristram romantic"
+    ]
+  },
+  {
+    "name": "Palamides",
+    "adj": [
+      "Sir",
+      "evil knight",
+      "good knight"
+    ],
+    "verb": [
+      "loved",
+      "asked",
+      "sat",
+      "fought",
+      "wants",
+      "saw",
+      "wanted",
+      "listen",
+      "arrived",
+      "carried",
+      "learn",
+      "hurt",
+      "take",
+      "'wounded'",
+      "fell",
+      "fight",
+      "went"
+    ],
+    "sentiment": "negative",
+    "location": [
+      "Camelot"
+    ],
+    "personality": "",
+    "relation": [
+      "Isolet romantic",
+      "Tristram enemy"
+    ]
+  },
+  {
+    "name": "Mordred",
+    "adj": [
+      "Sir",
+      "evil  knight",
+      "'king'"
+    ],
+    "verb": [
+      "waited",
+      "fell"
+    ],
+    "location": [
+      "Camelot",
+      "London",
+      "Dover"
+    ],
+    "sentiment": "very negative",
+    "personality": "",
+    "relation": [
+      "arthur enemy"
+    ]
+  },
+  {
+    "name": "Gawain",
+    "adj": [
+      "Sir"
+    ],
+    "verb": [
+      "died",
+      "spoke"
+    ],
+    "location": [
+      "France"
+    ],
+    "personality": "",
+    "sentiment": "positive",
+    "relation": [
+      "Lancelot brother",
+      "Lancelot friend"
+    ]
+  },
+  {
+    "name": "Bedivere",
+    "adj": [
+      "'sorry'"
+    ],
+    "verb": [
+      "took",
+      "walked",
+      "looked",
+      "put",
+      "'threw'",
+      "carried",
+      "stood",
+      "cried"
+    ],
+    "location": [],
+    "personality": "",
+    "sentiment": "neutral",
+    "relation": []
+  },
+  {
+    "name": "Atherp",
+    "adj": [],
+    "verb": [
+      "said"
+    ],
+    "location": [],
+    "sentiment": "postive",
+    "personality": "",
+    "relation": []
+  },
+  {
+    "name": "Bors",
+    "verb": ["go","come"],
+    "adj": ["Sir"],
+    "locations": [],
+    "relations":[],
+    "sentiment":"positive"
+  }]

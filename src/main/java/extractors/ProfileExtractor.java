@@ -21,17 +21,17 @@ public class ProfileExtractor {
     public List<Profile> extract(String content, boolean useQuote) {
         try {
 
-            if(!useQuote) {
+            if (!useQuote) {
                 String quoteRegex = "(\"(.*?)\"|\'(.*?)\'|(``(.*)'')|(''(.*)'')|(``(.*)``)|(`(.*)`)|(`(.*)')|('(.*)`))";
                 content = content.replaceAll(quoteRegex, "");
             }
             List<Profile> extractedProfiles = profileExtraction(content);
             Set<Profile> invalidProfiles = new HashSet<>();
-            for (Profile profile:extractedProfiles) {
-                if(profile.getFrequency() <= 1){
+            for (Profile profile : extractedProfiles) {
+                if (profile.getFrequency() <= 1) {
                     invalidProfiles.add(profile);
                 }
-                if(profile.getVerbs().size() == 0 && profile.getAdjs().size() == 0){
+                if (profile.getVerbs().size() == 0 && profile.getAdjs().size() == 0) {
                     invalidProfiles.add(profile);
                 }
             }
@@ -60,6 +60,7 @@ public class ProfileExtractor {
                 String category = coreLabel.get(CoreAnnotations.AnswerAnnotation.class);
                 if (category.equals("PERSON") || category.equals("ORGANIZATION")) {
 
+                    boolean canAddRole = category.equals("PERSON") ? true : false;
                     while (category.equals("PERSON") || category.equals("ORGANIZATION")) {
                         namedEntity += " " + coreLabel.word();
                         coreLabel = coreLabels.get(++i);
@@ -71,8 +72,8 @@ public class ProfileExtractor {
 
                     boolean existed = false;
                     // it it sth else rather than profile name. we profile name, keeps its first
-                    //occurance name, because it is almost always the most complete one
-                    //but we prefer to use the short name to capzure all the occurances in tag ans
+                    //occurrence name, because it is almost always the most complete one
+                    //but we prefer to use the short name to capture all the occurrences in tag ans
                     //dependency tree and ..
                     String currentName = namedEntity.trim();
                     for (Profile definedProfile : profiles) {
@@ -104,8 +105,11 @@ public class ProfileExtractor {
                         addTime(profile, coreLabels);
                         addSentiment(sentence, profile);
                         SemanticGraph dependencies = sentence.get(SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation.class);
+                        if(canAddRole)
+                            addRoles(dependencies, profile, sentence, currentName);
                         addAjd(dependencies, profile, currentName);
                         addVerb(dependencies, profile, currentName);
+
                     }
 
                 }
@@ -116,13 +120,108 @@ public class ProfileExtractor {
         return profiles;
     }
 
+    private void addRoles(SemanticGraph dependencies, Profile profile, CoreMap sentence, String currentProfileName) {
+
+        try {
+            List<SemanticGraphEdge> edges = new ArrayList<>();
+            for (String profileNamePart : currentProfileName.split(" ")) {
+                IndexedWord profileName = dependencies.getNodeByWordPattern(profileNamePart);
+                edges.addAll(dependencies.getOutEdgesSorted(profileName));
+                edges.addAll(dependencies.getIncomingEdgesSorted(profileName));
+            }
+
+            List<CoreLabel> coreLabels = sentence.get(CoreAnnotations.TokensAnnotation.class);
+            String firstWord = currentProfileName.split(" ")[0];
+            String lastWord = currentProfileName.split(" ")[currentProfileName.split(" ").length - 1];
+            int indexOfFirstWord = 0;
+            int indexOfLastWord = coreLabels.size() -1;
+            for (int i = 0; i < coreLabels.size(); i++) {
+                CoreLabel coreLabel = coreLabels.get(i);
+                if (coreLabel.word().equals(firstWord)) {
+                    indexOfFirstWord = i;
+                }
+                if (coreLabel.word().equals(lastWord)) {
+                    indexOfLastWord = i;
+                }
+            }
+            //find the nouns exatl before Person as his role
+            String role = "";
+            if(indexOfFirstWord > 0){
+            int counter = indexOfFirstWord - 1;
+            CoreLabel coreLabel = coreLabels.get(counter);
+            String pos_category = coreLabel.tag();
+            while (pos_category.startsWith("NN")) {
+                for (SemanticGraphEdge edge:edges) {
+                    if(edge.getSource().word().equals(coreLabel.word()) || edge.getTarget().word().equals(coreLabel.word())){
+                        role += " " + coreLabel.word();
+                        break;
+                    }
+                }
+                if (counter > 0) {
+                    coreLabel = coreLabels.get(--counter);
+                    pos_category = coreLabel.tag();
+                } else {
+                    pos_category = "o";
+                }
+
+            }
+            if (role != "")
+                profile.addToAdjs(role.trim());
+            }
+            if(indexOfLastWord < coreLabels.size() -1) {
+                role = "";
+                int counter = indexOfLastWord + 1;
+                CoreLabel coreLabel = coreLabels.get(counter);
+                String pos_category = coreLabel.tag();
+                while (pos_category.startsWith("NN")) {
+                    for (SemanticGraphEdge edge:edges) {
+                        if(edge.getSource().word().equals(coreLabel.word()) || edge.getTarget().word().equals(coreLabel.word())){
+                            role += " " + coreLabel.word();
+                            break;
+                        }
+                    }
+                    if (counter < coreLabels.size() - 1) {
+                        coreLabel = coreLabels.get(++counter);
+                        pos_category = coreLabel.tag();
+                    } else {
+                        pos_category = "o";
+                    }
+                }
+                if (role != "")
+                    profile.addToAdjs(role.trim());
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Error in adding role:");
+            System.out.println(ex.getMessage());
+            System.out.println("---------------------");
+        }
+    }
+
     private void addLocation(Profile profile, List<CoreLabel> coreLabels) {
-        for (CoreLabel coreLabel : coreLabels) {
+        for (Iterator<CoreLabel> iter = coreLabels.iterator(); iter.hasNext(); ) {
+            CoreLabel coreLabel = iter.next();
+            String category = coreLabel.get(CoreAnnotations.AnswerAnnotation.class);
+            String location = "";
+            while (category.equals("LOCATION")) {
+                location += " " + coreLabel.word();
+                if (iter.hasNext()) {
+                    coreLabel = iter.next();
+                    category = coreLabel.get(CoreAnnotations.AnswerAnnotation.class);
+                } else {
+                    category = "0";
+                }
+            }
+            if (location.trim() != "") {
+                profile.addLocation(location.trim());
+            }
+        }
+        /*for (CoreLabel coreLabel : coreLabels) {
             String category = coreLabel.get(CoreAnnotations.AnswerAnnotation.class);
             if (category.equals("LOCATION")) {
                 profile.addLocation(coreLabel.word());
             }
-        }
+        }*/
     }
 
     private void addTime(Profile profile, List<CoreLabel> coreLabels) {
@@ -143,64 +242,74 @@ public class ProfileExtractor {
 
     private void addAjd(SemanticGraph dependencies, Profile profile, String currentProfileName) {
 
-        //old Merlin
-        //old and clever Merlin, old clever Merlin
-        IndexedWord profileName = dependencies.getNodeByWordPattern(currentProfileName);
-        List<SemanticGraphEdge> outgoingEdges = dependencies.getOutEdgesSorted(profileName);
-        List<SemanticGraphEdge> incomingEdges = dependencies.getIncomingEdgesSorted(profileName);
-        for (SemanticGraphEdge edge : outgoingEdges) {
-            if (edge.getTarget().tag().startsWith("JJ")) {
-                profile.addToAdjs(edge.getTarget().word());
-                List<SemanticGraphEdge> outgoingEdgesFromJJ = dependencies.getOutEdgesSorted(edge.getTarget());
-                for (SemanticGraphEdge edgeFromJJ : outgoingEdgesFromJJ) {
-                    if ((edgeFromJJ.getRelation().getShortName().equals("conj") ||
-                            edgeFromJJ.getRelation().getShortName().equals("amod") ||
-                            edgeFromJJ.getRelation().getShortName().equals("punct")) &&
-                            edgeFromJJ.getTarget().tag().startsWith("JJ")) {
-                        profile.addToAdjs(edgeFromJJ.getTarget().word());
+        try {
+            //for example: reformist Ali-Akbar Rafsanjani . here reformist is an adjective for Rafsanji not Ali-Akbar
+            for (String profileNamePart : currentProfileName.split(" ")) {
+                //old Merlin
+                //old and clever Merlin, old clever Merlin
+                IndexedWord profileName = dependencies.getNodeByWordPattern(profileNamePart);
+                List<SemanticGraphEdge> outgoingEdges = dependencies.getOutEdgesSorted(profileName);
+                List<SemanticGraphEdge> incomingEdges = dependencies.getIncomingEdgesSorted(profileName);
+                for (SemanticGraphEdge edge : outgoingEdges) {
+                    if (edge.getTarget().tag().startsWith("JJ")) {
+                        profile.addToAdjs(edge.getTarget().word());
+                        List<SemanticGraphEdge> outgoingEdgesFromJJ = dependencies.getOutEdgesSorted(edge.getTarget());
+                        for (SemanticGraphEdge edgeFromJJ : outgoingEdgesFromJJ) {
+                            if ((edgeFromJJ.getRelation().getShortName().equals("conj") ||
+                                    edgeFromJJ.getRelation().getShortName().equals("amod") ||
+                                    edgeFromJJ.getRelation().getShortName().equals("punct")) &&
+                                    edgeFromJJ.getTarget().tag().startsWith("JJ")) {
+                                profile.addToAdjs(edgeFromJJ.getTarget().word());
+                            }
+                        }
                     }
                 }
-            }
-        }
 
-        //Merlin was an old and clever Merlin, old clever man
-        //Merlin was a good man
-        for (SemanticGraphEdge edge : incomingEdges) {
-            if (edge.getRelation().toString().equals("nsubj")) {
-                if ((edge.getSource().tag().equals("NN") || edge.getSource().tag().equals("NNP"))){
+                //Merlin was an old and clever Merlin, old clever man
+                //Merlin was a good man
+                for (SemanticGraphEdge edge : incomingEdges) {
+                    if (edge.getRelation().toString().equals("nsubj")) {
+                        if ((edge.getSource().tag().equals("NN") || edge.getSource().tag().equals("NNP"))) {
 //                        && (!edge.getSource().ner().equals("LOCATION") && !edge.getSource().ner().equals("DATE") && !edge.getSource().ner().equals("TIME"))) {
-                    IndexedWord NN = edge.getSource();
-                    List<SemanticGraphEdge> edgesOutFromNN = dependencies.getOutEdgesSorted(NN);
-                    for (SemanticGraphEdge outedge : edgesOutFromNN) {
-                        if (outedge.getTarget().tag().startsWith("JJ")) {
-                            profile.addToAdjs(outedge.getTarget().word() + " " + edge.getSource().word());
-                            List<SemanticGraphEdge> outgoingEdgesFromJJ = dependencies.getOutEdgesSorted(edge.getTarget());
+                            IndexedWord NN = edge.getSource();
+                            List<SemanticGraphEdge> edgesOutFromNN = dependencies.getOutEdgesSorted(NN);
+                            for (SemanticGraphEdge outedge : edgesOutFromNN) {
+                                if (outedge.getTarget().tag().startsWith("JJ")) {
+                                    profile.addToAdjs(outedge.getTarget().word() + " " + edge.getSource().word());
+                                    List<SemanticGraphEdge> outgoingEdgesFromJJ = dependencies.getOutEdgesSorted(edge.getTarget());
+                                    for (SemanticGraphEdge edgeFromJJ : outgoingEdgesFromJJ) {
+                                        if ((edgeFromJJ.getRelation().getShortName().equals("conj") ||
+                                                edgeFromJJ.getRelation().getShortName().equals("amod") ||
+                                                edgeFromJJ.getRelation().getShortName().equals("punct")) &&
+                                                edgeFromJJ.getTarget().tag().startsWith("JJ")) {
+                                            profile.addToAdjs(edgeFromJJ.getTarget().word());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        //Arthur was strong// Arthur was strong and young //Arthur was strong, young
+                        if (edge.getSource().tag().contains("JJ") || edge.getSource().tag().contains("RB")) {
+                            profile.addToAdjs(edge.getSource().word());
+                            List<SemanticGraphEdge> outgoingEdgesFromJJ = dependencies.getOutEdgesSorted(edge.getSource());
                             for (SemanticGraphEdge edgeFromJJ : outgoingEdgesFromJJ) {
-                                if ((edgeFromJJ.getRelation().getShortName().equals("conj") ||
-                                        edgeFromJJ.getRelation().getShortName().equals("amod")||
-                                        edgeFromJJ.getRelation().getShortName().equals("punct")) &&
-                                        edgeFromJJ.getTarget().tag().startsWith("JJ")) {
+                                if ((edgeFromJJ.getRelation().getShortName().equals("conj")
+                                        ||
+                                        edgeFromJJ.getRelation().toString().equals("amod")
+                                        || edgeFromJJ.getRelation().toString().equals("punct")) &&
+                                        edgeFromJJ.getTarget().tag().startsWith("JJ")) {//Merlin was an old and clever Merlin, old clever man
                                     profile.addToAdjs(edgeFromJJ.getTarget().word());
                                 }
                             }
                         }
                     }
                 }
-                //Arthur was strong// Arthur was strong and young //Arthur was strong, young
-                if (edge.getSource().tag().contains("JJ") || edge.getSource().tag().contains("RB")) {
-                    profile.addToAdjs(edge.getSource().word());
-                    List<SemanticGraphEdge> outgoingEdgesFromJJ = dependencies.getOutEdgesSorted(edge.getSource());
-                    for (SemanticGraphEdge edgeFromJJ : outgoingEdgesFromJJ) {
-                        if ((edgeFromJJ.getRelation().getShortName().equals("conj")
-                                ||
-                                edgeFromJJ.getRelation().toString().equals("amod")
-                                || edgeFromJJ.getRelation().toString().equals("punct")) &&
-                                edgeFromJJ.getTarget().tag().startsWith("JJ")) {//Merlin was an old and clever Merlin, old clever man
-                            profile.addToAdjs(edgeFromJJ.getTarget().word());
-                        }
-                    }
-                }
             }
+        }
+        catch(Exception ex){
+            System.out.println("Error in adding adjectives:");
+            System.out.println(ex.getMessage());
+            System.out.println("----------------------------");
         }
     }
 

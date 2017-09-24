@@ -12,12 +12,18 @@ public class main {
             System.out.print("you should specify input file, output folder and mode.");
             return;
         }
-        List<String> pipeLine = new ArrayList<>();
-        pipeLine.add("profile");
+
+        if(args[2].equals("eval")){
+            Evaluator eval = new Evaluator(true);
+            eval.strongCompareResults();
+        }else{
+            List<String> pipeLine = new ArrayList<>();
+            pipeLine.add("profile");
 //        pipeLine.add("event");
-        pipeLine.add("relation");
-//        pipeLine.add("temporal");
-        ReadStory readStory = new ReadStory();
-        readStory.returnJson(args[0], args[1], args[2], pipeLine);
+            pipeLine.add("relation");
+            pipeLine.add("temporal");
+            ReadStory readStory = new ReadStory();
+            readStory.returnJson(args[0], args[1], args[2], pipeLine);
+        }
     }
 }

@@ -14,7 +14,7 @@ public class QuoteExtractor {
     public QuoteExtractor(List<Profile> profiles){
         this.profiles = profiles;
     }
-    public String[] DIALOG_VERBS = {"acknowledged", "admitted", "agreed", "answered", "argued", "asked", "barked", "begged", "bellowed", "blustered", "bragged", "complained", "confessed", "cried", "demanded", "denied", "giggled", "hinted", "hissed", "howled", "inquired", "interrupted", "laughed", "lied", "mumbled", "muttered", "nagged", "pleaded", "promised", "questioned", "remembered", "replied", "requested", "retorted", "roared", "sang", "screamed", "screeched", "shouted", "sighed", "snarled", "sobbed", "threatened", "wailed", "warned", "whined", "whispered", "wondered", "yelled", "responded", "stammered", "said", "told", "wrote"};
+    public String[] DIALOG_VERBS = {"acknowledged", "admitted", "agreed", "answered", "argued", "asked", "barked", "begged", "bellowed", "blustered", "bragged", "complained", "confessed", "cried", "demanded", "denied", "giggled", "hinted", "hissed", "howled", "inquired", "interrupted", "laughed", "lied", "mumbled", "muttered", "nagged", "pleaded", "promised", "questioned", "remembered", "replied", "requested", "retorted", "roared", "sang", "screamed", "screeched", "shouted", "sighed", "snarled", "sobbed", "threatened", "wailed", "warned", "whined", "whispered", "wondered", "yelled", "responded", "stammered", "said", "told", "wrote", "saying"};
     Map<String, String> quotesPerNer = new HashMap<String, String>();
 
     public List<Profile> QuoteExtractor(String content, String mode) {
@@ -48,6 +48,24 @@ public class QuoteExtractor {
 
                 // Now create matcher object.
                 Matcher m2 = r2.matcher(strLine);
+                while (m2.find()) {
+                    System.out.println("Finding interview Quotes...");
+                    System.out.println(strLine);
+                    String speaker = m2.group(1);
+                    String quote = strLine.split(":")[1];
+                    for (Profile profile : profiles) {
+                        String NER = profile.getName();
+                        if (speaker.trim().toLowerCase().contains(NER.trim().toLowerCase())) {
+                            quote += (quotesPerNer.get(NER) == null) ? "" : quotesPerNer.get(NER);
+                            quotesPerNer.put(NER, quote);
+                        }
+                    }
+                }
+                pattern2 = "((\\w*\\W*){1,3})-(.*?)";
+                r2 = Pattern.compile(pattern2);
+
+                // Now create matcher object.
+                m2 = r2.matcher(strLine);
                 while (m2.find()) {
                     System.out.println("Finding interview Quotes...");
                     System.out.println(strLine);

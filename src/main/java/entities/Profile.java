@@ -16,6 +16,7 @@ public class Profile {
         adjs = new HashMap<String, Integer>();
         locations = new ArrayList<>();
         temporals = new ArrayList<>();
+        roles = new ArrayList<>();
     }
     private String name;
     private Map<String, Integer> verbs;
@@ -29,6 +30,7 @@ public class Profile {
     private int frequency;
     private List<String> locations;
     private List<String> temporals;
+    private List<String> roles;
 
 
     public String getName() {
@@ -66,6 +68,8 @@ public class Profile {
     }
 
     public void addToAdjs(String adj){
+        if(adj.contains(name) || name.contains(adj))
+            return;
         if(!this.adjs.keySet().contains(adj))
             this.adjs.put(adj,1);
         else{
@@ -177,5 +181,17 @@ public class Profile {
 
     public void addTemporal(String temporal){
         temporals.add(temporal);
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(String role){
+        roles.add(role);
     }
 }
