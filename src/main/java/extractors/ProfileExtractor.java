@@ -28,9 +28,9 @@ public class ProfileExtractor {
             List<Profile> extractedProfiles = profileExtraction(content);
             Set<Profile> invalidProfiles = new HashSet<>();
             for (Profile profile : extractedProfiles) {
-                if (profile.getFrequency() <= 1) {
-                    invalidProfiles.add(profile);
-                }
+//                if (profile.getFrequency() <= 1) {
+//                    invalidProfiles.add(profile);
+//                }
                 if (profile.getVerbs().size() == 0 && profile.getAdjs().size() == 0) {
                     invalidProfiles.add(profile);
                 }
@@ -152,7 +152,7 @@ public class ProfileExtractor {
             String pos_category = coreLabel.tag();
             while (pos_category.startsWith("NN")) {
                 for (SemanticGraphEdge edge:edges) {
-                    if(edge.getSource().word().equals(coreLabel.word()) || edge.getTarget().word().equals(coreLabel.word())){
+                    if(!edge.getRelation().getShortName().equals("nmod:poss") && (edge.getSource().word().equals(coreLabel.word()) || edge.getTarget().word().equals(coreLabel.word()))){
                         role += " " + coreLabel.word();
                         break;
                     }
@@ -166,7 +166,7 @@ public class ProfileExtractor {
 
             }
             if (role != "")
-                profile.addToAdjs(role.trim());
+                profile.addToAdjs(role.trim(), false);
             }
             if(indexOfLastWord < coreLabels.size() -1) {
                 role = "";
@@ -175,7 +175,7 @@ public class ProfileExtractor {
                 String pos_category = coreLabel.tag();
                 while (pos_category.startsWith("NN")) {
                     for (SemanticGraphEdge edge:edges) {
-                        if(edge.getSource().word().equals(coreLabel.word()) || edge.getTarget().word().equals(coreLabel.word())){
+                        if(!edge.getRelation().getShortName().equals("nmod:poss") && (edge.getSource().word().equals(coreLabel.word()) || edge.getTarget().word().equals(coreLabel.word()))){
                             role += " " + coreLabel.word();
                             break;
                         }
@@ -188,7 +188,7 @@ public class ProfileExtractor {
                     }
                 }
                 if (role != "")
-                    profile.addToAdjs(role.trim());
+                    profile.addToAdjs(role.trim(), false);
             }
         }
         catch(Exception ex){
@@ -252,16 +252,20 @@ public class ProfileExtractor {
                 List<SemanticGraphEdge> incomingEdges = dependencies.getIncomingEdgesSorted(profileName);
                 for (SemanticGraphEdge edge : outgoingEdges) {
                     if (edge.getTarget().tag().startsWith("JJ")) {
-                        profile.addToAdjs(edge.getTarget().word());
+                        boolean isNegtive = false;
                         List<SemanticGraphEdge> outgoingEdgesFromJJ = dependencies.getOutEdgesSorted(edge.getTarget());
                         for (SemanticGraphEdge edgeFromJJ : outgoingEdgesFromJJ) {
                             if ((edgeFromJJ.getRelation().getShortName().equals("conj") ||
                                     edgeFromJJ.getRelation().getShortName().equals("amod") ||
                                     edgeFromJJ.getRelation().getShortName().equals("punct")) &&
                                     edgeFromJJ.getTarget().tag().startsWith("JJ")) {
-                                profile.addToAdjs(edgeFromJJ.getTarget().word());
+                                profile.addToAdjs(edgeFromJJ.getTarget().word(),false);
+                            }
+                            if(edgeFromJJ.getRelation().getShortName().equals("neg")){
+                                isNegtive = true;
                             }
                         }
+                        profile.addToAdjs(edge.getTarget().word(), isNegtive);
                     }
                 }
 
@@ -275,22 +279,26 @@ public class ProfileExtractor {
                             List<SemanticGraphEdge> edgesOutFromNN = dependencies.getOutEdgesSorted(NN);
                             for (SemanticGraphEdge outedge : edgesOutFromNN) {
                                 if (outedge.getTarget().tag().startsWith("JJ")) {
-                                    profile.addToAdjs(outedge.getTarget().word() + " " + edge.getSource().word());
+                                    boolean isNegtive = false;
                                     List<SemanticGraphEdge> outgoingEdgesFromJJ = dependencies.getOutEdgesSorted(edge.getTarget());
                                     for (SemanticGraphEdge edgeFromJJ : outgoingEdgesFromJJ) {
                                         if ((edgeFromJJ.getRelation().getShortName().equals("conj") ||
                                                 edgeFromJJ.getRelation().getShortName().equals("amod") ||
                                                 edgeFromJJ.getRelation().getShortName().equals("punct")) &&
                                                 edgeFromJJ.getTarget().tag().startsWith("JJ")) {
-                                            profile.addToAdjs(edgeFromJJ.getTarget().word());
+                                            profile.addToAdjs(edgeFromJJ.getTarget().word(), false);
+                                        }
+                                        if(edgeFromJJ.getRelation().getShortName().equals("neg")){
+                                            isNegtive = true;
                                         }
                                     }
+                                    profile.addToAdjs(outedge.getTarget().word() + " " + edge.getSource().word(), isNegtive);
                                 }
                             }
                         }
                         //Arthur was strong// Arthur was strong and young //Arthur was strong, young
                         if (edge.getSource().tag().contains("JJ") || edge.getSource().tag().contains("RB")) {
-                            profile.addToAdjs(edge.getSource().word());
+                            boolean isNegative = false;
                             List<SemanticGraphEdge> outgoingEdgesFromJJ = dependencies.getOutEdgesSorted(edge.getSource());
                             for (SemanticGraphEdge edgeFromJJ : outgoingEdgesFromJJ) {
                                 if ((edgeFromJJ.getRelation().getShortName().equals("conj")
@@ -298,9 +306,13 @@ public class ProfileExtractor {
                                         edgeFromJJ.getRelation().toString().equals("amod")
                                         || edgeFromJJ.getRelation().toString().equals("punct")) &&
                                         edgeFromJJ.getTarget().tag().startsWith("JJ")) {//Merlin was an old and clever Merlin, old clever man
-                                    profile.addToAdjs(edgeFromJJ.getTarget().word());
+                                    profile.addToAdjs(edgeFromJJ.getTarget().word(), false);
+                                }
+                                if(edgeFromJJ.getRelation().getShortName().equals("neg")){
+                                    isNegative = true;
                                 }
                             }
+                            profile.addToAdjs(edge.getSource().word(), isNegative);
                         }
                     }
                 }
@@ -318,7 +330,18 @@ public class ProfileExtractor {
         List<SemanticGraphEdge> incomingEdges = dependencies.getIncomingEdgesSorted(profileName);
         for (SemanticGraphEdge edge : incomingEdges) {
             if (edge.getSource().tag().contains("VB") && edge.getRelation().toString().equals("nsubj")) {
-                profile.addToVerbs(edge.getSource().lemma());
+                boolean isNegative = false;
+                String normalizedVerb = edge.getSource().lemma();
+                List<SemanticGraphEdge> outComingEdgesFromVerb = dependencies.getOutEdgesSorted(edge.getSource());
+                for (SemanticGraphEdge fromVerb: outComingEdgesFromVerb) {
+                    if(fromVerb.getRelation().getShortName().equals("neg")){
+                        isNegative = true;
+                    }
+                    if(fromVerb.getRelation().getShortName().equals("compound:prt")){
+                        normalizedVerb = normalizedVerb + " " + fromVerb.getTarget().word();
+                    }
+                }
+                profile.addToVerbs(normalizedVerb, isNegative);
             }
         }
     }

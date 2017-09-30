@@ -1,0 +1,149 @@
+[
+  {
+    "profileNames": [
+      "Arthur",
+      "Uther"
+    ],
+    "typeNames": [
+      "family"
+    ]
+  },
+  {
+    "profileNames": [
+      "Uther",
+      "Irgaine"
+    ],
+    "typeNames": [
+      "romantic",
+      "family"
+    ]
+  },
+  {
+    "profileNames": [
+      "Irgaine",
+      "Arthur"
+    ],
+    "typeNames": [
+      "family"
+    ]
+  },
+  {
+    "profileNames": [
+      "Merlin",
+      "Arthur"
+    ],
+    "typeNames": [
+      "friendship"
+    ]
+  },
+  {
+    "profileNames": [
+      "Ginevere",
+      "Arthur"
+    ],
+    "typeNames": [
+      "family",
+      "romantic"
+    ]
+  },
+  {
+    "profileNames": [
+      "Kai",
+      "Arthur"
+    ],
+    "typeNames": [
+      "family"
+    ]
+  },
+  {
+    "profileNames": [
+      "Morgan-le-Fay",
+      "Arthur"
+    ],
+    "typeNames": [
+      "enemy"
+    ]
+  },
+  {
+    "profileNames": [
+      "Meligrance",
+      "Guinevere"
+    ],
+    "typeNames": [
+      "romantic"
+    ]
+  },
+  {
+    "profileNames": [
+      "Lancelot",
+      "Galahad"
+    ],
+    "typeNames": [
+      "family"
+    ]
+  },
+  {
+    "profileNames": [
+      "Lancelot",
+      "Meligrance"
+    ],
+    "typeNames": [
+      "enemy"
+    ]
+  },
+  {
+    "profileNames": [
+      "King of Lyonesse",
+      "Tristam"
+    ],
+    "typeNames": [
+      "family"
+    ]
+  },
+  {
+    "profileNames": [
+      "Tristram",
+      "Marhaus"
+    ],
+    "typeNames": [
+      "enemy"
+    ]
+  },
+  {
+    "profileNames": [
+      "Tristram",
+      "Isolt"
+    ],
+    "typeNames": [
+      "romantic",
+      "friendship"
+    ]
+  },
+  {
+    "profileNames": [
+      "Tristram",
+      "Mark"
+    ],
+    "typeNames": [
+      "family"
+    ]
+  },
+  {
+    "profileNames": [
+      "Isolt",
+      "Mark"
+    ],
+    "typeNames": [
+      "family"
+    ]
+  },
+  {
+    "profileNames": [
+      "Isolt",
+      "Palamides"
+    ],
+    "typeNames": [
+      "romantic"
+    ]
+  }
+]

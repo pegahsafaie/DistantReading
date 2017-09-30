@@ -8,28 +8,23 @@
       "ill"
     ],
     "verb": [
-      "died",
-      "told",
-      "said",
-      "married",
-      "loved",
-      "wanted",
-      "took",
-      "gave",
-      "called",
-      "said",
+      "die",
+      "tell",
+      "say",
+      "marry",
+      "love",
+      "want",
+      "take",
+      "give",
+      "call",
+      "say",
       "get"
     ],
     "location": [
       "south of britain"
     ],
     "personality": "",
-    "sentiment": "positive",
-    "relation": [
-      "Arthur family",
-      "Irgaine family",
-      "Irgaine romantic"
-    ]
+    "sentiment": "negative"
   },
   {
     "name": "Irgaine",
@@ -41,11 +36,7 @@
     ],
     "location": [],
     "personality": "",
-    "sentiment": "neutral",
-    "relation": [
-      "Arthur family",
-      "Uther family"
-    ]
+    "sentiment": "positive"
   },
   {
     "name": "Merlin",
@@ -56,44 +47,39 @@
     ],
     "verb": [
       "see",
-      "asked",
-      "spoke",
+      "ask",
+      "speak",
       "get out",
       "come out",
       "help",
       "teach",
       "change",
-      "cried",
-      "made",
-      "told",
-      "told",
-      "came",
+      "cry",
+      "make",
+      "tell",
+      "come",
       "listen",
-      "listened",
-      "went",
-      "told",
-      "'brought'",
-      "said",
-      "came",
-      "helped",
-      "used",
-      "told",
-      "knew",
-      "taught",
-      "visited",
-      "took",
-      "gave",
-      "answered"
+      "go",
+      "tell",
+      "'bring'",
+      "say",
+      "come",
+      "help",
+      "use",
+      "tell",
+      "know",
+      "teach",
+      "visit",
+      "tale",
+      "give",
+      "answer"
     ],
     "location": [
       "London",
       "Avalon"
     ],
     "personality": "",
-    "sentiment": "positive",
-    "relation": [
-      "Arthur friend"
-    ]
+    "sentiment": "positive"
   },
   {
     "name": "Arthur",
@@ -122,84 +108,84 @@
       "'dead'"
     ],
     "verb": [
-      "sent",
-      "'sleeping'",
+      "send",
+      "'sleep'",
       "'leave'",
       "stop",
       "get",
-      "heard",
-      "asked",
-      "knew",
-      "cried",
-      "fight",
-      "got",
-      "thought",
-      "walked down",
-      "opened",
-      "called",
-      "followed",
-      "built",
-      "wanted",
-      "asleep",
-      "won",
-      "hurt",
-      "jumped up",
-      "felt",
+      "hear",
+      "ask",
       "know",
-      "woke up",
-      "looked",
-      "saw",
+      "cry",
+      "fight",
+      "get",
+      "think",
+      "walk down",
+      "open",
+      "call",
+      "follow",
+      "build",
+      "want",
+      "sleep",
+      "win",
+      "hurt",
+      "jump up",
+      "feel",
+      "know",
+      "wake up",
+      "look",
+      "see",
       "left",
-      "went",
-      "saw",
+      "go",
+      "see",
       "understand",
-      "pulled",
+      "pull",
       "read",
-      "went",
-      "lived",
-      "took",
-      "met",
-      "took",
-      "said",
+      "go",
+      "live",
+      "take",
+      "meet",
+      "take",
+      "say",
       "put",
-      "pulled",
-      "ran back",
-      "showed",
-      "saw",
+      "pull",
+      "run back",
+      "show",
+      "see",
       "'try'",
       "'listen'",
-      "began",
-      "took",
-      "went",
-      "told",
-      "gave",
-      "went",
-      "went",
-      "fought",
+      "begin",
+      "take",
+      "go",
+      "tell",
+      "give",
+      "go",
+      "go",
+      "fight",
       "came back",
       "love",
-      "visited",
-      "made",
-      "stopped",
-      "looked",
-      "said",
-      "went",
-      "answered",
-      "went",
-      "met",
-      "fell",
-      "stood up",
-      "threw",
-      "ran",
-      "pulled out",
-      "pulled",
-      "fought",
+      "visit",
+      "make",
+      "stopp",
+      "look",
+      "say",
+      "go",
+      "answer",
+      "go",
+      "meet",
+      "fall",
+      "stand up",
+      "throw",
+      "run",
+      "pull out",
+      "pull",
+      "fight",
       "put",
-      "took",
-      "'died'",
-      "climbed down",
+      "take",
+      "'die'",
+      "climb down",
       "left",
-      "helped",
+      "help",
       "see",
       "take"
     ],
@@ -210,18 +196,7 @@
       "England"
     ],
     "personality": "",
-    "sentiment": "very positive",
-    "relation": [
-      "Sir Ector family",
-      "Uther family",
-      "Irgaine family",
-      "kay family",
-      "Merlin friend",
-      "King lea friend",
-      "Ginevere family",
-      "Guinevere romantic",
-      "Gawain friend"
-    ]
+    "sentiment": "negative"
   },
   {
     "name": "Ector",
@@ -230,22 +205,18 @@
       "Sir"
     ],
     "verb": [
-      "knew",
-      "saw",
+      "know",
+      "see",
       "took",
-      "said",
+      "say",
       "put",
-      "said",
-      "asked",
-      "went"
+      "say",
+      "ask",
+      "go"
     ],
     "location": [],
-    "sentiment": "positive",
-    "personality": "",
-    "relation": [
-      "Arthur famiy",
-      "Sir Kai family"
-    ]
+    "sentiment": "negative",
+    "personality": ""
   },
   {
     "name": "Sir Kai",
@@ -253,11 +224,7 @@
     "verb": [],
     "location": [],
     "sentiment": "",
-    "personality": "",
-    "relation": [
-      "Ector family",
-      "Arthur family"
-    ]
+    "personality": ""
   },
   {
     "name": "Archbishop",
@@ -265,15 +232,14 @@
       "important"
     ],
     "verb": [
-      "spoke",
-      "invited",
-      "thought",
-      "called"
+      "speak",
+      "invite",
+      "think",
+      "call"
     ],
     "personality": "",
-    "sentiment": "neutral",
-    "location": [],
-    "relation": []
+    "sentiment": "positive",
+    "location": []
   },
   {
     "name": "Guinevere",
@@ -284,26 +250,24 @@
     ],
     "verb": [
       "left",
-      "cried",
+      "cry",
       "know",
-      "answered",
-      "told",
-      "went",
-      "called",
-      "said",
-      "looked",
-      "spoke",
-      "'came'",
-      "'loves'"
+      "answer",
+      "tell",
+      "go",
+      "call",
+      "say",
+      "look",
+      "speak",
+      "'come'",
+      "'love'"
     ],
     "location": [
-      "England"
+      "England",
+      "Camelot"
     ],
-    "sentiment": "positive",
-    "personality": "",
-    "relation": [
-      "Arthur family"
-    ]
+    "sentiment": "negative",
+    "personality": ""
   },
   {
     "name": "Queen Annoure",
@@ -312,17 +276,16 @@
       "'richest person'"
     ],
     "verb": [
-      "sent",
-      "says",
+      "send",
+      "say",
       "took",
-      "gave",
-      "knew",
-      "'wanted'"
+      "give",
+      "know",
+      "'want'"
     ],
     "location": [],
-    "sentiment": "very negative",
-    "personality": "",
-    "relation": []
+    "sentiment": "negative",
+    "personality": ""
   },
   {
     "name": "Pellinore",
@@ -332,30 +295,26 @@
       "tired"
     ],
     "verb": [
-      "lived",
-      "shouted",
-      "took",
+      "live",
+      "shout",
+      "take",
       "hit",
-      "cried",
-      "fought",
+      "cry",
+      "fight",
       "hurt",
-      "sat",
-      "waited",
+      "sit",
+      "wait",
       "know",
       "see",
-      "looked up",
-      "saw",
+      "look up",
+      "see",
       "'know'"
     ],
     "location": [
       "Camelot"
     ],
-    "sentiment": "neutral",
-    "personality": "",
-    "relation": [
-      "Arthur enemy",
-      "Arthur friend"
-    ]
+    "sentiment": "negative",
+    "personality": ""
   },
   {
     "name": "Galahad",
@@ -369,18 +328,17 @@
       "happy"
     ],
     "verb": [
-      "came",
+      "come",
       "sit",
-      "said",
-      "built",
-      "put","cried"
+      "say",
+      "build",
+      "put","cry"
     ],
     "location": [
       "Camelot"
     ],
-    "sentiment": "very positive",
-    "personality": "",
-    "relation": []
+    "sentiment": "positive",
+    "personality": ""
   },
   {
     "name": "Morgan-le-Fay",
@@ -393,44 +351,41 @@
     ],
     "verb": [
       "do",
-      "used",
-      "hated",
-      "wanted",
-      "heard",
-      "wants",
-      "got",
+      "use",
+      "hate",
+      "want",
+      "hear",
+      "want",
+      "get",
       "left",
-      "watched",
-      "took",
+      "watch",
+      "take",
       "put",
-      "'visited'",
-      "threw",
-      "sent",
-      "said",
-      "arrived",
-      "cried",
-      "'gave'",
-      "went",
-      "thought",
-      "asked",
-      "stood",
+      "'visit'",
+      "throw",
+      "send",
+      "say",
+      "arrive",
+      "cry",
+      "'give'",
+      "go",
+      "think",
+      "ask",
+      "stand",
       "watched",
       "take",
       "want",
-      "saw",
-      "'came'",
+      "see",
+      "'come'",
       "'stay'",
-      "'loves'"
+      "'love'"
     ],
     "location": [
       "Gorres",
       "Camelot"
     ],
     "personality": "",
-    "sentiment": "very negative",
-    "relation": [
-      "Arthur Enemy"
-    ]
+    "sentiment": "negative"
   },
   {
     "name": "Damas",
@@ -440,17 +395,16 @@
       "'not brave man'"
     ],
     "verb": [
-      "caught",
+      "catch",
       "put",
-      "wants",
-      "asked",
-      "answered",
-      "gave"
+      "want",
+      "ask",
+      "answer",
+      "give"
     ],
     "location": [],
-    "sentiment": "very negative",
-    "personality": "",
-    "relation": []
+    "sentiment": "negative",
+    "personality": ""
   },
   {
     "name": "Accolon",
@@ -459,12 +413,11 @@
       "'sorry'"
     ],
     "verb": [
-      "said"
+      "say"
     ],
     "location": [],
-    "sentiment": "neutral",
-    "personality": "",
-    "relation": []
+    "sentiment": "negative",
+    "personality": ""
   },
   {
     "name": "Vivien",
@@ -472,25 +425,22 @@
       "Lady"
     ],
     "verb": [
-      "lived",
-      "knew",
-      "saw",
-      "learned",
-      "went",
-      "studied",
-      "thought",
-      "climbed",
-      "ran out",
-      "shouted"
+      "live",
+      "know",
+      "see",
+      "learn",
+      "go",
+      "study",
+      "think",
+      "climb",
+      "run out",
+      "shout"
     ],
     "location": [
       "Camelot"
     ],
-    "sentiment": "very negative",
-    "personality": "",
-    "relation": [
-      "Merlin Enemy"
-    ]
+    "sentiment": "negative",
+    "personality": ""
   },
   {
     "name": "Meligrance",
@@ -502,25 +452,22 @@
       "dead"
     ],
     "verb": [
-      "moved",
-      "saw",
-      "loved",
-      "wanted",
-      "said",
-      "fell",
+      "move",
+      "see",
+      "love",
+      "want",
+      "say",
+      "fall",
       "hit",
-      "answered",
-      "went",
-      "knew",
-      "thought",
-      "showed",
-      "told"
+      "answer",
+      "go",
+      "know",
+      "think",
+      "show",
+      "tell"
     ],
     "location": [],
-    "relation": [
-      "Guinevere romantic"
-    ],
-    "sentiment": "very negative",
+    "sentiment": "negative",
     "personality": ""
   },
   {
@@ -534,36 +481,32 @@
       "'strongest'"
     ],
     "verb": [
-      "heard",
+      "hear",
       "put",
-      "took",
-      "said",
-      "arrived",
-      "came",
-      "thought",
+      "take",
+      "say",
+      "arrive",
+      "come",
+      "think",
       "'kill'",
       "climb  up",
-      "went",
+      "go",
       "left",
       "fight",
       "win",
-      "jumped away",
+      "jumpe away",
       "cut",
-      "smiled",
-      "fell",
-      "said",
+      "smile",
+      "fall",
+      "say",
       "want",
-      "cried","married"
+      "cry","marry"
     ],
     "location": [
       "France"
     ],
     "personality": "",
-    "sentiment": "positive",
-    "relation": [
-      "Meligrance enemy",
-      "Galahad family"
-    ]
+    "sentiment": "negative"
   },
   {
     "name": "King of Lyonesse",
@@ -571,26 +514,23 @@
       "angry"
     ],
     "verb": [
-      "went",
-      "wanted",
-      "made",
+      "go",
+      "want",
+      "make",
       "find",
       "come back",
-      "'knows'",
+      "'know'",
       "speak",
       "eat",
       "'die'",
-      "began",
-      "married",
-      "remembered"
+      "begin",
+      "marry",
+      "remember"
     ],
     "personality": "",
-    "sentiment": "neutral",
+    "sentiment": "positive",
     "location": [
       "Lyonesse"
-    ],
-    "relation": [
-      "Tristam family"
     ]
   },
   {
@@ -609,54 +549,50 @@
       "'brave'"
     ],
     "verb": [
-      "went",
-      "loved",
-      "said",
-      "got",
-      "fell  down",
-      "arrived",
-      "told",
-      "used",
-      "killed",
-      "began",
-      "moved",
+      "go",
+      "love",
+      "say",
+      "get",
+      "fall down",
+      "arrive",
+      "tell",
+      "use",
+      "kill",
+      "begin",
+      "move",
       "hit",
-      "loved",
-      "saw",
-      "gave",
-      "asked",
-      "jumped",
-      "came",
-      "thought",
-      "looked",
-      "taught",
-      "liked",
-      "stood",
-      "pulled",
-      "got off",
+      "love",
+      "see",
+      "give",
+      "ask",
+      "jump",
+      "come",
+      "think",
+      "look",
+      "teach",
+      "like",
+      "stand",
+      "pull",
+      "get off",
       "'help'",
-      "cried",
-      "played",
+      "cry",
+      "play",
       "fight",
-      "took",
-      "fought",
-      "threw",
-      "answered",
-      "stayed",
+      "take",
+      "fight",
+      "throw",
+      "answer",
+      "stay",
       "stop",
-      "fell",
-      "died"
+      "fall",
+      "die"
     ],
     "personality": "",
-    "sentiment": "very positive",
+    "sentiment": "negative",
     "location": [
       "Cornwall",
-      "Irland",
+      "Ireland",
       "Camelot"
-    ],
-    "relation": [
-      "Isolet romantic",
-      "Mark family"
     ]
   },
   {
@@ -668,27 +604,22 @@
     ],
     "verb": [
       "love",
-      "gave",
-      "began",
-      "followed",
-      "watched",
-      "shouted",
-      "wounded",
-      "thought",
-      "made",
-      "sent",
+      "give",
+      "begin",
+      "follow",
+      "watch",
+      "shout",
+      "wound",
+      "think",
+      "make",
+      "send",
       "said",
-      "'wants'",
-      "came"
+      "'want'",
+      "come"
     ],
-    "location": [],
+    "location": ["Cornwall"],
     "sentiment": "negative",
-    "personality": "",
-    "relation": [
-      "Tristram family",
-      "Isolet family",
-      "King of Lyonesse family"
-    ]
+    "personality": ""
   },
   {
     "name": "Marhaus",
@@ -700,17 +631,16 @@
       "older"
     ],
     "verb": [
-      "came",
+      "come",
       "hit",
-      "started",
-      "wounded"
+      "start",
+      "wound"
     ],
     "personality": "",
-    "sentiment": "neutral",
+    "sentiment": "negative",
     "location": [
-      "Irland"
-    ],
-    "relation": []
+      "Ireland"
+    ]
   },
   {
     "name": "Isolt",
@@ -723,38 +653,34 @@
       "'Queen'"
     ],
     "verb": [
-      "cleaned",
-      "stayed",
-      "enjoyed",
-      "knew",
-      "married",
-      "ran  away",
-      "ran",
-      "cried",
-      "sat down",
-      "stood",
-      "looked",
-      "asked",
-      "listened",
-      "heard",
+      "clean",
+      "stay",
+      "enjoy",
+      "know",
+      "marry",
+      "run  away",
+      "run",
+      "cry",
+      "sit down",
+      "stand",
+      "look",
+      "ask",
+      "listen",
+      "hear",
       "eat",
       "drink",
       "speak",
-      "died",
-      "loved",
-      "thought",
-      "saw",
-      "watched"
+      "die",
+      "love",
+      "teach",
+      "see",
+      "watch"
     ],
-    "sentiment": "positive",
+    "sentiment": "negative",
     "location": [
       "London"
     ],
-    "personality": "",
-    "relation": [
-      "Mark family",
-      "Tristram romantic"
-    ]
+    "personality": ""
   },
   {
     "name": "Palamides",
@@ -764,33 +690,29 @@
       "good knight"
     ],
     "verb": [
-      "loved",
-      "asked",
-      "sat",
-      "fought",
-      "wants",
-      "saw",
-      "wanted",
+      "love",
+      "ask",
+      "sit",
+      "fight",
+      "want",
+      "see",
+      "want",
       "listen",
-      "arrived",
-      "carried",
+      "arrive",
+      "carry",
       "learn",
       "hurt",
       "take",
-      "'wounded'",
-      "fell",
+      "'wound'",
+      "fall",
       "fight",
-      "went"
+      "go"
     ],
     "sentiment": "negative",
     "location": [
       "Camelot"
     ],
-    "personality": "",
-    "relation": [
-      "Isolet romantic",
-      "Tristram enemy"
-    ]
+    "personality": ""
   },
   {
     "name": "Mordred",
@@ -800,19 +722,16 @@
       "'king'"
     ],
     "verb": [
-      "waited",
-      "fell"
+      "wait",
+      "fall"
     ],
     "location": [
       "Camelot",
       "London",
       "Dover"
     ],
-    "sentiment": "very negative",
-    "personality": "",
-    "relation": [
-      "arthur enemy"
-    ]
+    "sentiment": "negative",
+    "personality": ""
   },
   {
     "name": "Gawain",
@@ -820,18 +739,14 @@
       "Sir"
     ],
     "verb": [
-      "died",
-      "spoke"
+      "die",
+      "speak"
     ],
     "location": [
       "France"
     ],
     "personality": "",
-    "sentiment": "positive",
-    "relation": [
-      "Lancelot brother",
-      "Lancelot friend"
-    ]
+    "sentiment": "negative"
   },
   {
     "name": "Bedivere",
@@ -839,36 +754,33 @@
       "'sorry'"
     ],
     "verb": [
-      "took",
-      "walked",
-      "looked",
+      "take",
+      "walk",
+      "look",
       "put",
-      "'threw'",
-      "carried",
-      "stood",
-      "cried"
+      "'throw'",
+      "carry",
+      "stand",
+      "cry"
     ],
     "location": [],
     "personality": "",
-    "sentiment": "neutral",
-    "relation": []
+    "sentiment": "negative"
   },
   {
     "name": "Atherp",
     "adj": [],
     "verb": [
-      "said"
+      "say"
     ],
     "location": [],
-    "sentiment": "postive",
-    "personality": "",
-    "relation": []
+    "sentiment": "positive",
+    "personality": ""
   },
   {
     "name": "Bors",
     "verb": ["go","come"],
     "adj": ["Sir"],
-    "locations": [],
-    "relations":[],
+    "location": [],
     "sentiment":"positive"
   }]

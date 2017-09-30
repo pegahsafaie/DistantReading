@@ -9,7 +9,6 @@ public class ProfileEvaluator {
     private String[] adj;
     private String[] verb;
     private String[] location;
-    private String[] relation;
     private String personality;
     private String sentiment;
 
@@ -43,14 +42,6 @@ public class ProfileEvaluator {
 
     public void setLocation(String[] location) {
         this.location = location;
-    }
-
-    public String[] getRelation() {
-        return relation;
-    }
-
-    public void setRelation(String[] relation) {
-        this.relation = relation;
     }
 
     public String getPersonality() {

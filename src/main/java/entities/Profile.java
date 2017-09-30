@@ -49,7 +49,10 @@ public class Profile {
         this.verbs = verbs;
     }
 
-    public void addToVerbs(String verb){
+    public void addToVerbs(String verb, boolean isNegative){
+        if(isNegative){
+            verb = "not " + verb;
+        }
         if(!verbs.keySet().contains(verb))
             this.verbs.put(verb,1);
         else{
@@ -67,7 +70,10 @@ public class Profile {
         this.adjs = adjs;
     }
 
-    public void addToAdjs(String adj){
+    public void addToAdjs(String adj, boolean isNegative){
+        if(isNegative){
+            adj = "not " + adj;
+        }
         if(adj.contains(name) || name.contains(adj))
             return;
         if(!this.adjs.keySet().contains(adj))
