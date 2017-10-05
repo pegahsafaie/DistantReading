@@ -17,6 +17,7 @@ import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.util.CoreMap;
 import entities.Context;
 import entities.Event;
+import entities.Profile;
 import org.lambda3.graphene.core.Graphene;
 import org.lambda3.graphene.core.relation_extraction.model.ExContent;
 import org.lambda3.graphene.core.relation_extraction.model.ExElement;
@@ -35,8 +36,10 @@ public class EventExtractor {
     List<Event> events;
     CRFClassifier<CoreLabel> classifier;
     AnnotationPipeline pipeline;
+    List<Profile> profiles;
 
-    public List<Event> extract(String content) {
+    public List<Event> extract(String content, List<Profile> profiles) {
+        this.profiles = profiles;
         events = new ArrayList<Event>();
         grapheneExtractor(content);
 
@@ -44,13 +47,13 @@ public class EventExtractor {
         pipeline = null;
         System.gc();
 
-        setLemmasList();
-        System.gc();
+//        setLemmasList();
+//        System.gc();
 
         //extractVerbNetInformation();
         //System.gc();
 
-        sentimentAnalysis();
+//        sentimentAnalysis();
         return events;
     }
 
@@ -66,9 +69,9 @@ public class EventExtractor {
 
         for (ExElement element : ec.getElements()) {
             try {
-                if (isEvent_NER(element)) {
+                ExSPO eXSpo = element.getSpo().get();
+                if (isProfile(eXSpo.getSubject()) && isNotBe(eXSpo.getPredicate())) {
                     Event event = new Event();
-                    ExSPO eXSpo = element.getSpo().get();
                     event.setVerb(eXSpo.getPredicate());
                     event.setLemmatizedVerb(eXSpo.getPredicate());
                     event.setObject(eXSpo.getObject());
@@ -104,20 +107,39 @@ public class EventExtractor {
 //                                event.setVerbNetArguments(map.getValue());
 //                            }
 //                        }
-//                    }
+//                    } 0
+
                     event.setvContexts(contexts);
                     events.add(event);
                 }
             } catch (Exception ex) {
-                System.out.print("ERROR:" + ex.getMessage());
+                System.out.println("ERROR:" + ex.getMessage());
             }
         }
     }
 
+    private boolean isProfile(String name) {
+        for (Profile profile : profiles) {
+            if (profile.getName().toLowerCase().trim().contains(name.toLowerCase().trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void setLemmasList() {
-        for (Event event:events) {
-            String verb = event.getPredicate();
-            event.setLemmatizedVerb(new Sentence(verb).lemma(0));
+
+        for (Event event : events) {
+            try {
+                String verb = event.getPredicate();
+                String lemma = new Sentence(verb).lemma(0);
+                if (!lemma.equals("be"))
+                    event.setLemmatizedVerb(lemma);
+                else
+                    events.remove(event);
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
         }
     }
 
@@ -135,7 +157,7 @@ public class EventExtractor {
     }
 
     private boolean isEvent_NER(ExElement element) {
-        if(classifier == null)
+        if (classifier == null)
             classifier = CRFClassifier.getDefaultClassifier();
         boolean isEvent = false;
         List<List<CoreLabel>> classify = classifier.classify(element.getNotSimplifiedText());
@@ -150,11 +172,11 @@ public class EventExtractor {
         return isEvent;
     }
 
-    private void sentimentAnalysis(){
+    private void sentimentAnalysis() {
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, parse, sentiment");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-        for (Event event:events) {
+        for (Event event : events) {
             Annotation annotation = pipeline.process(event.getSentence());
             for (CoreMap sentence : annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
                 Tree tree = sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
@@ -164,4 +186,9 @@ public class EventExtractor {
         }
     }
 
+    private boolean isNotBe(String verb){
+        if(verb.equals("was")||verb.equals("is")||verb.equals("were")||verb.equals("are"))
+            return false;
+        else return  true;
+    }
 }
