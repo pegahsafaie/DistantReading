@@ -1,13 +1,19 @@
 package extractors;
 
 import edu.stanford.nlp.ie.crf.CRFClassifier;
+import edu.stanford.nlp.ie.util.RelationTriple;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.ling.IndexedWord;
+import edu.stanford.nlp.naturalli.NaturalLogicAnnotations;
 import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.AnnotationPipeline;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.pipeline.TokenizerAnnotator;
+import edu.stanford.nlp.semgraph.SemanticGraph;
+import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations;
+import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.time.TimeAnnotations;
@@ -15,6 +21,7 @@ import edu.stanford.nlp.time.TimeAnnotator;
 import edu.stanford.nlp.time.TimeExpression;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.util.PropertiesUtils;
 import entities.Context;
 import entities.Event;
 import entities.Profile;
@@ -25,6 +32,7 @@ import org.lambda3.graphene.core.relation_extraction.model.ExSPO;
 import org.lambda3.graphene.core.relation_extraction.model.ExVContext;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
@@ -38,157 +46,186 @@ public class EventExtractor {
     AnnotationPipeline pipeline;
     List<Profile> profiles;
 
-    public List<Event> extract(String content, List<Profile> profiles) {
-        this.profiles = profiles;
-        events = new ArrayList<Event>();
-        grapheneExtractor(content);
-
-        classifier = null;
-        pipeline = null;
-        System.gc();
-
-//        setLemmasList();
-//        System.gc();
-
-        //extractVerbNetInformation();
-        //System.gc();
-
-//        sentimentAnalysis();
-        return events;
-    }
-
-    private void grapheneExtractor(String content) {
-
-        Graphene graphene = new Graphene();
-        ExContent ec = graphene.doRelationExtraction(content, false);
-
-        Properties props = new Properties();
-        pipeline = new AnnotationPipeline();
-        pipeline.addAnnotator(new TokenizerAnnotator(false));
-        pipeline.addAnnotator(new TimeAnnotator("sutime", props));
-
-        for (ExElement element : ec.getElements()) {
-            try {
-                ExSPO eXSpo = element.getSpo().get();
-                if (isProfile(eXSpo.getSubject()) && isNotBe(eXSpo.getPredicate())) {
-                    Event event = new Event();
-                    event.setVerb(eXSpo.getPredicate());
-                    event.setLemmatizedVerb(eXSpo.getPredicate());
-                    event.setObject(eXSpo.getObject());
-                    event.setPredicate(eXSpo.getPredicate());
-                    event.setSubject(eXSpo.getSubject());
-                    event.setSentence(element.getText());
-                    Context[] contexts = new Context[element.getVContexts().size()];
-                    int i = 0;
-                    for (ExVContext verbContext : element.getVContexts()) {//each event can have multi contexts
-                        Context context = new Context();
-                        context.setClassification(verbContext.getClassification().name());
-                        context.setText(verbContext.getText());
-                        context.setEventDateTime(dateNormilize(verbContext.getText()));
-                        contexts[i++] = context;
-                    }
-//                    //each event can have multiple verb, but we hope that just one verb, because we dont support array
-//                    List<Map<String, Map<String, String>>> semanticLabeldInput = semanticRoleLabel(element.getText());
-//                    if(semanticLabeldInput != null)
-//                    for (Map<String, Map<String, String>> extent : semanticLabeldInput) {
-//                        //use SemLink to find verbNet corresponding class
-//                        for (Map.Entry<String, Map<String, String>> role : extent.entrySet()) {//for each sentence
-//                            String verb_pos_simpleVerb = role.getKey();
-//                            String[] info = verb_pos_simpleVerb.split("_");
-//                            String tense = info[1];
-//                            String simple_verb = info[2];
-//                            Map<String, String> arguments = role.getValue();
-//                            Map<String, Map<String, String>> semLinkMap = findSemLinkMap(simple_verb);
-//                            event.setVerb(simple_verb);
-//                            event.setVerbTense(tense);
-//                            event.setProbArguments(arguments);
-//                            for (Map.Entry<String,Map<String,String>> map:semLinkMap.entrySet()) {
-//                                event.setVerbNetId(map.getKey());
-//                                event.setVerbNetArguments(map.getValue());
-//                            }
-//                        }
-//                    } 0
-
-                    event.setvContexts(contexts);
-                    events.add(event);
-                }
-            } catch (Exception ex) {
-                System.out.println("ERROR:" + ex.getMessage());
-            }
-        }
-    }
-
-    private boolean isProfile(String name) {
-        for (Profile profile : profiles) {
-            if (profile.getName().toLowerCase().trim().contains(name.toLowerCase().trim())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void setLemmasList() {
-
-        for (Event event : events) {
-            try {
-                String verb = event.getPredicate();
-                String lemma = new Sentence(verb).lemma(0);
-                if (!lemma.equals("be"))
-                    event.setLemmatizedVerb(lemma);
-                else
-                    events.remove(event);
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
-    }
-
-    private String[] dateNormilize(String text) {
-        Annotation annotation = new Annotation(text);
-        pipeline.annotate(annotation);
-        List<CoreMap> timexAnnsAll = annotation.get(TimeAnnotations.TimexAnnotations.class);
-
-        String[] dateTimes = new String[timexAnnsAll.size()];
-        int i = 0;
-        for (CoreMap cm : timexAnnsAll) {
-            dateTimes[i++] = cm.get(TimeExpression.Annotation.class).getTemporal().toString();
-        }
-        return dateTimes;
-    }
-
-    private boolean isEvent_NER(ExElement element) {
-        if (classifier == null)
-            classifier = CRFClassifier.getDefaultClassifier();
-        boolean isEvent = false;
-        List<List<CoreLabel>> classify = classifier.classify(element.getNotSimplifiedText());
-        for (List<CoreLabel> coreLabels : classify) {
-            for (CoreLabel coreLabel : coreLabels) {
-                String word = coreLabel.word();
-                String category = coreLabel.get(CoreAnnotations.AnswerAnnotation.class);
-                if (category.equals("LOCATION") || category.equals("DATE") || category.equals("TIME"))
-                    return true;
-            }
-        }
-        return isEvent;
-    }
-
-    private void sentimentAnalysis() {
-        Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, parse, sentiment");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-        for (Event event : events) {
-            Annotation annotation = pipeline.process(event.getSentence());
+    public List<Event> extract(String content, List<Profile> profiles, boolean removeEventsWithoutLocationAndObejct, boolean removeEventsWithNoCharacterObject) {
+        try {
+            List<Event> events = new ArrayList<>();
+            Properties props = new Properties();
+            props.setProperty("annotators", "tokenize, ssplit, pos,lemma, parse, ner");
+            StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+            Annotation annotation = pipeline.process(content);
             for (CoreMap sentence : annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
-                Tree tree = sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
-                int sentiment = RNNCoreAnnotations.getPredictedClass(tree);
-                event.addToSentiment(sentiment);
+                SemanticGraph dependencies = sentence.get(SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation.class);
+                for (CoreLabel coreLabel : sentence.get(CoreAnnotations.TokensAnnotation.class)) {
+                    if (coreLabel.tag().startsWith("VB")) {
+                        String verb = coreLabel.lemma();
+                        String obj = "";
+                        String subj = "";
+                        String locations = "";
+                        String times = "";
+                        String confirmedSubj = "";
+                        String confirmedObj = "";
+                        boolean negative = false;
+                        IndexedWord verbNode = dependencies.getNodeByWordPattern(coreLabel.word());
+                        List<SemanticGraphEdge> outComingEdgesFromVerb = dependencies.getOutEdgesSorted(verbNode);
+                        for (SemanticGraphEdge edge : outComingEdgesFromVerb) {
+                            if (edge.getRelation().getShortName().equals("neg")) {
+                                negative = true;
+                            }
+                            if (edge.getRelation().getShortName().equals("compound:prt")) {
+                                verb = verb + " " + edge.getTarget().word();
+                            }
+                            if (edge.getRelation().getShortName().contains("obj")) {
+                                obj = edge.getTarget().word().toLowerCase().trim();
+                                obj += " " + findNameDependencies(dependencies, sentence, obj).toLowerCase().trim();
+                            }
+                            if (edge.getRelation().getShortName().contains("subj") && (edge.getTarget().ner().equals("PERSON") || edge.getTarget().ner().equals("ORGANIZATION"))) {
+                                subj = edge.getTarget().word().toLowerCase().trim();
+                                subj += " " + findNameDependencies(dependencies, sentence, subj).trim().toLowerCase();
+                            }
+                        }
+                        for (Profile profile : profiles) {
+                            if (subj != "" && (profile.getName().toLowerCase().trim().contains(subj)
+                                    || subj.contains(profile.getName().toLowerCase().trim()))) {
+                                confirmedSubj = profile.getName();
+                            }
+                            if (obj != "" && (profile.getName().toLowerCase().trim().contains(obj)
+                                    || obj.contains(profile.getName().toLowerCase().trim()))) {
+                                confirmedObj = profile.getName();
+                            }
+                        }
+                        for (CoreLabel coreLabelNested : sentence.get(CoreAnnotations.TokensAnnotation.class)) {
+                            if (coreLabelNested.ner().equals("LOCATION") && !locations.contains(coreLabelNested.word())) {
+                                if (sentence.get(CoreAnnotations.TokensAnnotation.class).get(coreLabelNested.index() - 1).ner().equals("LOCATION")) {
+                                    locations += " " + coreLabelNested.word();
+                                } else {
+                                    locations += "," + coreLabelNested.word();
+                                }
+
+                            }
+                            if ((coreLabelNested.ner().equals("TIME") || coreLabelNested.ner().equals("DATE")) && !times.contains(coreLabelNested.word())) {
+                                    times = ", " + coreLabelNested.word();
+                                    times += " " + findNameDependencies(dependencies, sentence, coreLabelNested.word());
+                            }
+                        }
+                        if (verb.equals("become") || verb.equals("do") || verb.equals("have") || verb.equals("be") || confirmedSubj.isEmpty())
+                            continue;
+                        if (removeEventsWithoutLocationAndObejct && obj.isEmpty() && locations.isEmpty())
+                            continue;
+                        if (!removeEventsWithoutLocationAndObejct && (obj.isEmpty() && locations.isEmpty() && times.isEmpty()))
+                            continue;
+                        if (removeEventsWithNoCharacterObject && obj.isEmpty())
+                            continue;
+                        if (confirmedObj == confirmedSubj)
+                            continue;
+
+                        Event event = new Event();
+                        event.setLemmatizedVerb(negative ? "not " + verb : verb);
+                        event.setObject(obj);
+                        event.setSubject(!confirmedSubj.isEmpty() ? confirmedSubj : subj);
+                        events.add(event);
+                        event.setTimes(times.split(","));
+                        event.setLocations(locations.split(","));
+                    }
+                }
+            }
+            return events;
+        }catch(Exception ex){
+            System.out.println("Error in event extractor: " + ex.getMessage());
+            return null;
+        }
+    }
+
+    private void extractByCoreNLPRelationAnnotator(String content){
+        Properties props = PropertiesUtils.asProperties(
+                "annotators", "tokenize,ssplit,pos,lemma,depparse,natlog,openie"
+        );
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        String[] chapters = content.split("\n\n\n\n");
+        for (String chapter : chapters) {
+
+
+            Annotation doc = new Annotation(chapter);
+            pipeline.annotate(doc);
+            for (CoreMap sentence : doc.get(CoreAnnotations.SentencesAnnotation.class)) {
+
+                // Print SemanticGraph
+//            System.out.println(sentence.get(SemanticGraphCoreAnnotations.EnhancedDependenciesAnnotation.class).toString(SemanticGraph.OutputFormat.LIST));
+
+                // Get the OpenIE triples for the sentence
+                Collection<RelationTriple> triples = sentence.get(NaturalLogicAnnotations.RelationTriplesAnnotation.class);
+
+                // Print the triples
+                for (RelationTriple triple : triples) {
+                    System.out.println(triple.confidence + "\t" +
+                            triple.subjectLemmaGloss() + "\t" +
+                            triple.relationLemmaGloss() + "\t" +
+                            triple.objectLemmaGloss());
+                }
             }
         }
     }
 
-    private boolean isNotBe(String verb){
-        if(verb.equals("was")||verb.equals("is")||verb.equals("were")||verb.equals("are"))
-            return false;
-        else return  true;
+    private void extractByGraphene(){
+
+    }
+
+
+    private String findNameDependencies(SemanticGraph dependencies, CoreMap sentence, String object) {
+        try {
+            List<SemanticGraphEdge> edges = new ArrayList<>();
+
+            IndexedWord profileName = dependencies.getNodeByWordPattern(object);
+            edges.addAll(dependencies.getOutEdgesSorted(profileName));
+            edges.addAll(dependencies.getIncomingEdgesSorted(profileName));
+
+
+            List<CoreLabel> coreLabels = sentence.get(CoreAnnotations.TokensAnnotation.class);
+            int indexOfObjectWord = 0;
+            for (int i = 0; i < coreLabels.size(); i++) {
+                if (coreLabels.get(i).word().equals(object)) {
+                    indexOfObjectWord = i;
+                }
+            }
+            //find the nouns exatl before Person as his role
+            String objectDependencies = "";
+            if (indexOfObjectWord < coreLabels.size() - 1) {
+                objectDependencies = "";
+                int counter = indexOfObjectWord + 1;
+                CoreLabel coreLabel = coreLabels.get(counter);
+                String pos_category = coreLabel.tag();
+
+                while (pos_category.startsWith("NN") || pos_category.equals("DT")
+                        || pos_category.equals("IN")) {
+
+                    if(pos_category.startsWith("NN"))
+                    objectDependencies += " " + coreLabel.word();
+
+                    if (counter < coreLabels.size() - 1) {
+                        //add DT and IN just in the case that we have another word after them
+                        if(pos_category.equals("DT") || pos_category.equals("IN")) {
+                            String w = new String(coreLabel.word());
+                            coreLabel = coreLabels.get(++counter);
+                            pos_category = coreLabel.tag();
+                            if(pos_category.startsWith("NN") || pos_category.equals("DT")
+                                    || pos_category.equals("IN")){
+                                objectDependencies += " " + w;
+                            }
+                        }else{
+                            coreLabel = coreLabels.get(++counter);
+                            pos_category = coreLabel.tag();
+                        }
+                    } else {
+                        pos_category = "o";
+                    }
+                }
+                if (objectDependencies != "")
+                    return objectDependencies;
+            }
+        } catch (Exception ex) {
+            System.out.println("Error in finding objectDependencies:");
+            System.out.println(ex.getMessage());
+            System.out.println("---------------------");
+        }
+        return "";
     }
 }

@@ -4,6 +4,7 @@ import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.IndexedWord;
+import edu.stanford.nlp.ling.tokensregex.SequenceMatchRules;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.semgraph.SemanticGraph;
@@ -18,20 +19,21 @@ import java.util.*;
 
 public class ProfileExtractor {
 
-    public List<Profile> extract(String content, boolean useQuote) {
+    public List<Profile> extract(String content, boolean useQuote, boolean profileContainsCheck, boolean removeProfilesWitoutInfo , boolean removeProfilesWithFreq1) {
         try {
 
             if (!useQuote) {
                 String quoteRegex = "(\"(.*?)\"|\'(.*?)\'|(``(.*)'')|(''(.*)'')|(``(.*)``)|(`(.*)`)|(`(.*)')|('(.*)`))";
                 content = content.replaceAll(quoteRegex, "");
             }
-            List<Profile> extractedProfiles = profileExtraction(content);
+            List<Profile> extractedProfiles = profileExtraction(content, profileContainsCheck);
             Set<Profile> invalidProfiles = new HashSet<>();
             for (Profile profile : extractedProfiles) {
-//                if (profile.getFrequency() <= 1) {
-//                    invalidProfiles.add(profile);
-//                }
-                if (profile.getVerbs().size() == 0 && profile.getAdjs().size() == 0) {
+
+                if (removeProfilesWithFreq1 && profile.getFrequency() <= 1) {
+                    invalidProfiles.add(profile);
+                }
+                if (removeProfilesWitoutInfo && profile.getVerbs().size() == 0 && profile.getAdjs().size() == 0) {
                     invalidProfiles.add(profile);
                 }
             }
@@ -44,7 +46,33 @@ public class ProfileExtractor {
         }
     }
 
-    private List<Profile> profileExtraction(String content) {
+    public void addPropertiesToCurrentProfiles(List<Profile> profiles, String content){
+        Properties props = new Properties();
+        props.setProperty("annotators", "tokenize, ssplit, pos,lemma, ner, parse,sentiment");
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        String PARAGRAPH_SPLIT_REGEX = "(?m)(?=^\\s{4})";
+
+        String[] paragraphs = content.split(PARAGRAPH_SPLIT_REGEX);
+        //for timeline extract purpose we want to break between paragraphs
+        for (String paragraph : paragraphs) {
+        Annotation annotation = pipeline.process(paragraph);
+        for (CoreMap sentence:annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
+            List<CoreLabel> coreLabels = sentence.get(CoreAnnotations.TokensAnnotation.class);
+            for (Profile profile:profiles) {
+                if(sentence.toString().toLowerCase().contains(profile.getName().toLowerCase())){
+                    addLocation(profile, coreLabels);
+                    addTime(profile, coreLabels);
+                    addSentiment(sentence, profile);
+                    SemanticGraph dependencies = sentence.get(SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation.class);
+                    addAjd(dependencies, profile, profile.getName());
+//                    addRoles(dependencies, profile, sentence, profile.getName());
+                    addVerb(dependencies, profile, profile.getName());
+                }
+            }}
+        }
+    }
+
+    private List<Profile> profileExtraction(String content, boolean profileContainsCheck) {
         List<Profile> profiles = new ArrayList<>();
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, pos,lemma, parse,sentiment");
@@ -53,13 +81,18 @@ public class ProfileExtractor {
         CRFClassifier<CoreLabel> classifier = CRFClassifier.getDefaultClassifier();
 
         List<List<CoreLabel>> classify = classifier.classify(content);
+        String namedEntity = "";
         for (List<CoreLabel> coreLabels : classify) {
             for (int i = 0; i < coreLabels.size(); i++) {
                 CoreLabel coreLabel = coreLabels.get(i);
-                String namedEntity = "";
+                namedEntity = "";
                 String category = coreLabel.get(CoreAnnotations.AnswerAnnotation.class);
                 if (category.equals("PERSON") || category.equals("ORGANIZATION")) {
 
+                    // prevent part of a name to be another name.
+                    // for example in equalcheck mode we would have
+                    //2 names : Donald Trump, Trump
+                    if(namedEntity.contains(coreLabel.word()))continue;
                     boolean canAddRole = category.equals("PERSON") ? true : false;
                     while (category.equals("PERSON") || category.equals("ORGANIZATION")) {
                         namedEntity += " " + coreLabel.word();
@@ -81,8 +114,11 @@ public class ProfileExtractor {
                         //for example Arthur comes first to story. then Arthur becomes a king and we have
                         //King arthur. Or vice versa. for example one person is president Obama and after
                         //some lines his period is finished and he is called Obama
-                        if (definedProfile.getName().trim().contains(namedEntity.trim())
-                                || namedEntity.trim().contains(definedProfile.getName().trim())) {
+                        String definedProfileClean = definedProfile.getName().toLowerCase().trim();
+                        String namedEntityClean = namedEntity.trim().toLowerCase();
+                        if((profileContainsCheck && (definedProfileClean.contains(namedEntityClean) || namedEntityClean.contains(definedProfileClean)))
+                                ||
+                            (!profileContainsCheck  && definedProfileClean.equals(namedEntityClean))){
                             profile = definedProfile;
                             profile.addFrequency();
                             existed = true;
@@ -150,13 +186,15 @@ public class ProfileExtractor {
             int counter = indexOfFirstWord - 1;
             CoreLabel coreLabel = coreLabels.get(counter);
             String pos_category = coreLabel.tag();
-            while (pos_category.startsWith("NN")) {
-                for (SemanticGraphEdge edge:edges) {
+                while (pos_category.startsWith("NN") || pos_category.startsWith("DT")
+                        || pos_category.startsWith(",") ) {
+                if(pos_category.startsWith("NN")){
+                    for (SemanticGraphEdge edge:edges) {
                     if(!edge.getRelation().getShortName().equals("nmod:poss") && (edge.getSource().word().equals(coreLabel.word()) || edge.getTarget().word().equals(coreLabel.word()))){
                         role += " " + coreLabel.word();
                         break;
                     }
-                }
+                }}
                 if (counter > 0) {
                     coreLabel = coreLabels.get(--counter);
                     pos_category = coreLabel.tag();
@@ -173,13 +211,15 @@ public class ProfileExtractor {
                 int counter = indexOfLastWord + 1;
                 CoreLabel coreLabel = coreLabels.get(counter);
                 String pos_category = coreLabel.tag();
-                while (pos_category.startsWith("NN")) {
+                while (pos_category.startsWith("NN") || pos_category.startsWith("DT")
+                        || pos_category.startsWith(",") || (pos_category.startsWith("VB")&&coreLabel.lemma().equals("be"))) {
+                    if(pos_category.startsWith("NN")){
                     for (SemanticGraphEdge edge:edges) {
                         if(!edge.getRelation().getShortName().equals("nmod:poss") && (edge.getSource().word().equals(coreLabel.word()) || edge.getTarget().word().equals(coreLabel.word()))){
                             role += " " + coreLabel.word();
                             break;
                         }
-                    }
+                    }}
                     if (counter < coreLabels.size() - 1) {
                         coreLabel = coreLabels.get(++counter);
                         pos_category = coreLabel.tag();
@@ -202,12 +242,16 @@ public class ProfileExtractor {
         for (Iterator<CoreLabel> iter = coreLabels.iterator(); iter.hasNext(); ) {
             CoreLabel coreLabel = iter.next();
             String category = coreLabel.get(CoreAnnotations.AnswerAnnotation.class);
+            if(category == null)
+            category = coreLabel.ner();
             String location = "";
             while (category.equals("LOCATION")) {
                 location += " " + coreLabel.word();
                 if (iter.hasNext()) {
                     coreLabel = iter.next();
                     category = coreLabel.get(CoreAnnotations.AnswerAnnotation.class);
+                    if(category == null)
+                        category = coreLabel.ner();
                 } else {
                     category = "0";
                 }
@@ -225,10 +269,25 @@ public class ProfileExtractor {
     }
 
     private void addTime(Profile profile, List<CoreLabel> coreLabels) {
-        for (CoreLabel coreLabel : coreLabels) {
+        for (Iterator<CoreLabel> iter = coreLabels.iterator(); iter.hasNext(); ) {
+            CoreLabel coreLabel = iter.next();
             String category = coreLabel.get(CoreAnnotations.AnswerAnnotation.class);
-            if (category.equals("DATE") || category.equals("TIME")) {
-                profile.addTemporal(coreLabel.word());
+            if(category == null)
+                category = coreLabel.ner();
+            String temporal = "";
+            while (category.equals("DATE") || category.equals("TIME")) {
+                temporal += " " + coreLabel.word();
+                if (iter.hasNext()) {
+                    coreLabel = iter.next();
+                    category = coreLabel.get(CoreAnnotations.AnswerAnnotation.class);
+                    if(category == null)
+                        category = coreLabel.ner();
+                } else {
+                    category = "0";
+                }
+            }
+            if (temporal.trim() != "") {
+                profile.addTemporal(temporal.trim());
             }
         }
     }

@@ -10,14 +10,18 @@ import java.util.Map;
 public class personalityExtractor {
 
     List<Profile> profiles;
-    public personalityExtractor(List<Profile> profiles){
+    boolean profileContainsCheck;
+    boolean useNLPForQuoteExtraction;
+    public personalityExtractor(List<Profile> profiles, boolean profileContainsCheck, boolean useNLPForQuoteExtraction){
         this.profiles = profiles;
+        this.profileContainsCheck = profileContainsCheck;
+        this.useNLPForQuoteExtraction = useNLPForQuoteExtraction;
     }
 
     public List<Profile> extract(String content, String mode) {
 
         QuoteExtractor quoteExtractor = new QuoteExtractor(profiles);
-        List<Profile> profiles = quoteExtractor.QuoteExtractor(content, mode);
+        List<Profile> profiles = quoteExtractor.QuoteExtractor(content, mode, profileContainsCheck, useNLPForQuoteExtraction);
         quoteExtractor = null;
         //Models are trained to output scores on a scale from 1 (low) to 7 (high),
         //we have two type of models. First one is based on data-set which is score by observers and the
@@ -28,7 +32,8 @@ public class personalityExtractor {
 
         for (Profile profile:profiles) {
             String quote = profile.getQuote();
-            if(quote != null && quote != "") {
+            if(quote != null && quote.length() > 100) {
+                quote = quote.replace("'|\"|´|`","");
                 double[] scores = PersonalityRecognizer.extractPersonality(4, false, quote);
                 Personality personality = new Personality();
                 personality.setAgreeableness(scores[0]);

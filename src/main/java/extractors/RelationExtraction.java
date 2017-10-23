@@ -2,18 +2,23 @@ package extractors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
+import edu.stanford.nlp.ie.util.RelationTriple;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.naturalli.NaturalLogicAnnotations;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.semgraph.SemanticGraph;
+import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations;
+import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.util.PropertiesUtils;
 import entities.ResourceClass;
 import entities.Profile;
 import entities.Relation;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class RelationExtraction {
@@ -29,42 +34,46 @@ public class RelationExtraction {
     public List<Relation> extract(String content) {
         List<Relation> relations = new ArrayList<>();
         try {
-//            Properties props = new Properties();
-//            props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner");
-//            StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-//            Annotation annotation = pipeline.process(content);
-//            List<CoreMap> sentences = annotation.get(CoreAnnotations.SentencesAnnotation.class);
-            CRFClassifier<CoreLabel> classifier = CRFClassifier.getDefaultClassifier();
+                CRFClassifier<CoreLabel> classifier = CRFClassifier.getDefaultClassifier();
 
-            List<List<CoreLabel>> classify = classifier.classify(content);
-            for (List<CoreLabel> coreLabels : classify) {
+                List<List<CoreLabel>> classify = classifier.classify(content);
+                for (List<CoreLabel> coreLabels : classify) {
 
-                StringBuilder sb = new StringBuilder();
-                for (CoreLabel label : coreLabels) {
-                    sb.append(label.word());
-                    sb.append(" ");
+                    StringBuilder sb = new StringBuilder();
+                    for (CoreLabel label : coreLabels) {
+                        sb.append(label.word());
+                        sb.append(" ");
+                    }
+                    addPossibleRelations(relations, coreLabels, sb.toString());
                 }
-                addPossibleRelations(relations, coreLabels, sb.toString());
-            }
 //            for (CoreMap sentence : sentences) {
 //                addPossibleRelations(relations, sentence);
 //            }
-            //check the names with current profiles
-            for (Relation relation : relations) {
-                boolean isThere = false;
-                for (String name : relation.getProfileNames()) {
-                    isThere = false;
-                    for (Profile profile : profiles) {
-                        if (name.trim().toLowerCase().contains(profile.getName().trim().toLowerCase())
-                                || profile.getName().trim().toLowerCase().contains(name.trim().toLowerCase())) {
-                            isThere = true;
+                //check the names with current profiles
+                List<Relation> removeRelations = new ArrayList<>();
+                for (Relation relation : relations) {
+                    boolean isThere = false;
+                    String[] profileNames = relation.getProfileNames();
+                    for (int i = 0; i < relation.getProfileNames().length - 1; i++) {
+                        String name = profileNames[i];
+                        isThere = false;
+                        for (Profile profile : profiles) {
+                            if (name.trim().toLowerCase().contains(profile.getName().trim().toLowerCase())
+                                    || profile.getName().trim().toLowerCase().contains(name.trim().toLowerCase())) {
+                                isThere = true;
+                                profileNames[i] = profile.getName();
+
+                            }
                         }
                     }
+                    if (!isThere)
+                        removeRelations.add(relation);
+                    else
+                        relation.setProfileNames(profileNames);
                 }
-                if (!isThere)
-                    relations.remove(relation);
-            }
-
+                for (Relation rel : removeRelations) {
+                    relations.remove(rel);
+                }
 
         } catch (Exception ex) {
             System.out.print("Error in relation extraction: " + ex.getMessage());
@@ -83,7 +92,7 @@ public class RelationExtraction {
                 token = coreLabels.get(++i);
                 ne = token.get(CoreAnnotations.AnswerAnnotation.class);
             }
-            if(namedEntity != "")
+            if (namedEntity != "")
                 names.add(namedEntity.trim());
         }
 
@@ -92,31 +101,31 @@ public class RelationExtraction {
         String relationName = "";
         if (names.size() > 1) {
             for (String enemyRel : pattern.getEnemyRelations()) {
-                if (sentence.contains("not " + enemyRel.toLowerCase().trim())) {
+                if (sentence.contains("not " + enemyRel.toLowerCase())) {
                     relationType = "friendship";
                     relationName = "not " + enemyRel;
-                }else if(sentence.contains(enemyRel.toLowerCase().trim())){
+                } else if (sentence.contains(enemyRel.toLowerCase())) {
                     relationType = "enemy";
                     relationName = enemyRel;
                 }
             }
             for (String familyRel : pattern.getFamilyRelations()) {
-                if (sentence.contains(familyRel.toLowerCase().trim())) {
+                if (sentence.contains(familyRel.toLowerCase())) {
                     relationType = "family";
                     relationName = familyRel;
                 }
             }
             for (String romanticRel : pattern.getRomanticRelationShip()) {
-                if (sentence.contains(romanticRel.toLowerCase().trim())) {
+                if (sentence.contains(romanticRel.toLowerCase())) {
                     relationType = "romantic";
                     relationName = romanticRel;
                 }
             }
             for (String friendRel : pattern.getFriendRelations()) {
-                if (sentence.contains("not " + friendRel.toLowerCase().trim())) {
+                if (sentence.contains("not " + friendRel.toLowerCase())) {
                     relationType = "enemy";
                     relationName = "not " + friendRel;
-                }else if (sentence.contains(friendRel.toLowerCase().trim())) {
+                } else if (sentence.contains(friendRel.toLowerCase())) {
                     relationType = "friendship";
                     relationName = friendRel;
                 }

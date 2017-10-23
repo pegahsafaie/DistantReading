@@ -15,9 +15,19 @@ import java.util.List;
 public class Evaluator {
 
     private boolean quoteConsideration;
+    private String taggedRelationFile;
+    private String taggedProfileFile;
 
-    public Evaluator(boolean quoteConsideration) {
+    private String generatedProfileFile;
+    private String generatedRelationFile;
+
+    public Evaluator(boolean quoteConsideration, String taggedRelationFile, String taggedProfileFile,String generatedProfileFile, String generatedRelationFile) {
         this.quoteConsideration = quoteConsideration;
+        this.taggedProfileFile = taggedProfileFile;
+        this.taggedRelationFile = taggedRelationFile;
+        this.generatedProfileFile = generatedProfileFile;
+        this.generatedRelationFile = generatedRelationFile;
+
     }
 
     public void strongCompareResults() {
@@ -26,13 +36,14 @@ public class Evaluator {
         String content2= readFile("SampleStory.txt");
         String content3= readFile("Socrates.txt");
         String content4= readFile("SampleInterview.txt");
-        System.out.println("average word count:" + (content1.split(" ").length + content2.split(" ").length + content3.split(" ").length +
-                content4.split(" ").length)/4);
+        System.out.println((content1.split(" ").length));
+//        System.out.println("average word count:" + (content1.split(" ").length + content2.split(" ").length + content3.split(" ").length +
+//                content4.split(" ").length)/4);
 
-        List<Profile> predictedProfiles = readResult("out/profiles_SampleStoryResolved.json");
-        Relation[] predictedRelations = readRelationResult("out/relations_SampleStoryResolved.json");
-        RelationEvaluate[] groundTruthRelations = readGroundTruth_relations("relation-ground-truth-Arthur.json");
-        ProfileEvaluator[] groundTruthProfiles = readGroundTruth("ground-truth-Arthur.json");
+        List<Profile> predictedProfiles = readResult(generatedProfileFile);
+        Relation[] predictedRelations = readRelationResult(generatedRelationFile);
+        RelationEvaluate[] groundTruthRelations = readGroundTruth_relations(taggedRelationFile);
+        ProfileEvaluator[] groundTruthProfiles = readGroundTruth(taggedProfileFile);
 
         List<String> TP_adj = new ArrayList<>();
         List<String> FP_adj = new ArrayList<>();
@@ -192,6 +203,20 @@ public class Evaluator {
             if(!isThereCharacter)
                 FP_character.add(predictedProfile.getName());
         }
+
+
+        int quoteCount = 0;
+        int maxQuoteCount = 0;
+        for (Profile predictedProfile : predictedProfiles) {
+            if(predictedProfile.getQuote()==null || predictedProfile.getQuote().trim().isEmpty()) continue;
+            quoteCount += predictedProfile.getQuote().trim().split(" ").length;
+            if(predictedProfile.getQuote().trim().split(" ").length > maxQuoteCount){
+                maxQuoteCount = predictedProfile.getQuote().trim().split(" ").length;
+            }
+
+        }
+        System.out.println("Quote length average per character: " + quoteCount/predictedProfiles.size());
+        System.out.println("Quote max length for a character: " + maxQuoteCount);
 
         float recall_character = Float.parseFloat(String.valueOf(TP_character.size())) / (Float.parseFloat(String.valueOf(TP_character.size())) + Float.parseFloat(String.valueOf(FN_character.size())));
         float precision_character = Float.parseFloat(String.valueOf(TP_character.size())) / (Float.parseFloat(String.valueOf(TP_character.size())) + Float.parseFloat(String.valueOf(FP_character.size())));

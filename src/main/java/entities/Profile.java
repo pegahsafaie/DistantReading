@@ -74,14 +74,19 @@ public class Profile {
         if(isNegative){
             adj = "not " + adj;
         }
-        if(adj.contains(name) || name.contains(adj))
+        if(adj.trim().contains(name.trim()) || name.trim().contains(adj.trim()))
             return;
-        if(!this.adjs.keySet().contains(adj))
-            this.adjs.put(adj,1);
-        else{
-            Integer frequency = this.adjs.get(adj);
-            this.adjs.put(adj, ++frequency);
+        for (String currAdj:this.adjs.keySet()) {
+            String currAdj2 = currAdj.trim().toLowerCase();
+            adj = adj.trim().toLowerCase();
+            if(currAdj2.contains(adj) || adj.contains(currAdj2)){
+                Integer frequency = this.adjs.get(currAdj);
+                this.adjs.put(currAdj, ++frequency);
+                return;
+            }
         }
+        this.adjs.put(adj,1);
+
     }
 
     @Override
@@ -182,11 +187,13 @@ public class Profile {
     }
 
     public void addLocation(String location){
-        locations.add(location);
+        if(!locations.contains(location.trim()))
+            locations.add(location);
     }
 
     public void addTemporal(String temporal){
-        temporals.add(temporal);
+        if(!temporals.contains(temporal.trim()))
+            temporals.add(temporal);
     }
 
     public List<String> getRoles() {
